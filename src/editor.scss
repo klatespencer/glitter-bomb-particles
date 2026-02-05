@@ -1,0 +1,149 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-glitter-bomb-glitter-bomb {
+	padding: 0;
+
+	.components-notice {
+		margin: 0;
+
+		ul {
+			margin-top: 8px;
+			margin-bottom: 8px;
+		}
+
+		strong {
+			display: block;
+			margin-bottom: 8px;
+		}
+	}
+}
+
+// Glitter Bomb editor placeholder with gradient (no animations)
+.glitter-bomb-editor-placeholder {
+	position: relative;
+	padding: 0;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+	overflow: hidden;
+
+	.glitter-bomb-placeholder-content {
+		position: relative;
+		z-index: 1;
+	}
+
+	// Collapsible toggle button
+	.glitter-bomb-collapse-toggle {
+		width: 100%;
+		padding: 20px 30px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		&:focus {
+			outline: 2px solid rgba(255, 255, 255, 0.8);
+			outline-offset: -2px;
+		}
+	}
+
+	.glitter-bomb-placeholder-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-bottom: 8px;
+	}
+
+	.glitter-bomb-placeholder-emoji {
+		font-size: 24px;
+	}
+
+	.glitter-bomb-placeholder-title {
+		margin: 0;
+		flex: 1;
+		font-size: 28px;
+		font-weight: 700;
+		color: #ffffff;
+		text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+		letter-spacing: 0.5px;
+	}
+
+	.glitter-bomb-toggle-icon {
+		color: #ffffff;
+		filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+		min-width: auto;
+		padding: 4px;
+
+		&:hover {
+			background: transparent;
+			color: #ffffff;
+			opacity: 0.8;
+		}
+	}
+
+	.glitter-bomb-placeholder-summary {
+		font-size: 14px;
+		margin: 0;
+		color: #ffffff;
+		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+		line-height: 1.5;
+		font-weight: 500;
+	}
+
+	.glitter-bomb-placeholder-description {
+		font-size: 16px;
+		margin: 20px 30px 24px;
+		color: #ffffff;
+		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+		line-height: 1.5;
+	}
+
+	.glitter-bomb-placeholder-settings {
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 8px;
+		padding: 20px;
+		margin: 0 30px 20px;
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+
+		p {
+			margin: 0 0 12px 0;
+			font-size: 14px;
+			color: #ffffff;
+			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			text-align: left;
+
+			li {
+				padding: 6px 0;
+				font-size: 14px;
+				color: #ffffff;
+				text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+				line-height: 1.6;
+			}
+		}
+	}
+
+	.glitter-bomb-placeholder-tip {
+		font-size: 13px;
+		margin: 0 30px 30px;
+		color: #ffffff;
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		font-style: italic;
+	}
+}

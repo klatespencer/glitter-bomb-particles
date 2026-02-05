@@ -1,0 +1,141 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "glitter-bomb/glitter-bomb",
+	"version": "1.0.0",
+	"title": "Glitter Bomb",
+	"category": "widgets",
+	"icon": "admin-customizer",
+	"description": "Create magical, accessible particle effects with cursor-following sparkles and full-screen glitter fields. WCAG 2.2 AA compliant.",
+	"keywords": ["particles", "animation", "interactive", "sparkles", "glitter", "effects", "accessibility"],
+	"example": {},
+	"attributes": {
+		"experienceMode": {
+			"type": "string",
+			"default": "particle-field"
+		},
+		"colorPalette": {
+			"type": "string",
+			"default": "rainbow-cycling"
+		},
+		"particleOpacity": {
+			"type": "number",
+			"default": 0.9
+		},
+		"particleSize": {
+			"type": "number",
+			"default": 10
+		},
+		"particleSizeMobile": {
+			"type": "number",
+			"default": 7.5
+		},
+		"animationDuration": {
+			"type": "number",
+			"default": 1500
+		},
+		"enableButtonText": {
+			"type": "string",
+			"default": "✨ Enable Sparkles"
+		},
+		"disableButtonText": {
+			"type": "string",
+			"default": "✨ Disable Sparkles"
+		},
+		"buttonPosition": {
+			"type": "string",
+			"default": "bottom-right"
+		},
+		"customColor": {
+			"type": "string",
+			"default": "#ff69b4"
+		},
+		"maxParticles": {
+			"type": "number",
+			"default": 50
+		},
+		"enabledByDefault": {
+			"type": "boolean",
+			"default": true
+		},
+		"enableButtonTextColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"enableButtonBackgroundColor": {
+			"type": "string",
+			"default": "#D4AF37"
+		},
+		"enableButtonGradientStart": {
+			"type": "string",
+			"default": "#D4AF37"
+		},
+		"enableButtonGradientEnd": {
+			"type": "string",
+			"default": "#B87333"
+		},
+		"disableButtonTextColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"disableButtonBackgroundColor": {
+			"type": "string",
+			"default": "#E5E4E2"
+		},
+		"disableButtonGradientStart": {
+			"type": "string",
+			"default": "#E5E4E2"
+		},
+		"disableButtonGradientEnd": {
+			"type": "string",
+			"default": "#C0C0C0"
+		},
+		"displayBehavior": {
+			"type": "string",
+			"default": "compact"
+		},
+		"fieldColorPalette": {
+			"type": "string",
+			"default": "metallic"
+		},
+		"fieldParticleCount": {
+			"type": "number",
+			"default": 200
+		},
+		"fieldParticleSize": {
+			"type": "number",
+			"default": 6
+		},
+		"fieldParticleSizeMobile": {
+			"type": "number",
+			"default": 3
+		},
+		"fieldMouseAttraction": {
+			"type": "number",
+			"default": 0.5
+		},
+		"fieldSpreadStrength": {
+			"type": "number",
+			"default": 0.3
+		},
+		"fieldClickExplosion": {
+			"type": "boolean",
+			"default": true
+		},
+		"disableOnMobile": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"reusable": false
+	},
+	"textdomain": "glitter-bomb",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}
