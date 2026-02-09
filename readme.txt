@@ -1,4 +1,4 @@
-=== Glitter Bomb Particles ===
+=== Glitter Bomb ===
 
 Contributors:      klatespencer
 Tags:              block, particles, glitter, animation, accessibility

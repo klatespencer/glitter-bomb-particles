@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Glitter Bomb Particles
+ * Plugin Name:       Glitter Bomb
  * Plugin URI:        https://github.com/klatespencer/glitter-bomb-particles
  * Description:       Create magical, accessible particle effects with cursor-following sparkles and full-screen glitter fields. Two experience modes: Sprinkle Trail and Particle Field. WCAG 2.2 AA compliant with full keyboard and screen reader support.
  * Version:           1.0.0

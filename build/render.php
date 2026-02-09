@@ -1,6 +1,6 @@
 <?php
 /**
- * Render callback for Glitter Bomb Particles block
+ * Render callback for Glitter Bomb block
  * 
  * Security: This file implements comprehensive input validation, sanitization,
  * and output escaping to prevent XSS, injection attacks, and other vulnerabilities.
@@ -308,7 +308,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 ?>
 
 <div <?php echo wp_kses_post( $wrapper_attributes ); ?>>
-	<!-- Glitter Bomb Particles will be rendered via JavaScript -->
+	<!-- Glitter Bomb will be rendered via JavaScript -->
 	<!-- All rendering happens client-side for security isolation -->
 </div>
 <?php } )( $attributes );

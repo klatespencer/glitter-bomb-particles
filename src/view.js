@@ -1,5 +1,5 @@
 /**
- * Glitter Bomb Particles - Frontend Interactive Script
+ * Glitter Bomb - Frontend Interactive Script
  * 
  * Creates accessible, animated particle effects with two experience modes:
  * 1. Sprinkle Trail: Particles following cursor/touch movement
@@ -125,7 +125,7 @@
 		// Create title
 		const title = document.createElement('h3');
 		title.style.cssText = 'margin: 0 0 12px 0; font-size: 20px;';
-		title.appendChild(document.createTextNode('✨ Glitter Bomb Particles ✨'));
+		title.appendChild(document.createTextNode('✨ Glitter Bomb ✨'));
 		message.appendChild(title);
 		
 		// Create description paragraph
@@ -160,7 +160,7 @@
 
 	if (!browserSupport.supported) {
 		// Browser doesn't support required features - show fallback
-		console.warn('Glitter Bomb Particles: Browser not supported. Missing features:', browserSupport.missing);
+		console.warn('Glitter Bomb: Browser not supported. Missing features:', browserSupport.missing);
 		
 		// Show fallback message in all blocks
 		function showFallbacks() {
