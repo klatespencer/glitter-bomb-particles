@@ -2,14 +2,14 @@
 
 Contributors:      klatespencer
 Tags:              block, particles, glitter, animation, accessibility
-Tested up to:      6.8
+Tested up to:      6.9
 Stable tag:        1.0.0
 License:           GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 6.1
 Requires PHP:      7.4
 
-Create magical, accessible particle effects with cursor-following sparkles and full-screen glitter fields. Fully responsive with touch support. WCAG 2.2 AA compliant.
+Create magical, accessible particle effects with cursor-following sparkles and full-screen glitter fields. WCAG 2.2 AA compliant.
 
 == Description ==
 

@@ -10,7 +10,7 @@
  * Author URI:        https://github.com/klatespencer
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       glitter-bomb
+ * Text Domain:       glitterbomb
  * Domain Path:       /languages
  *
  * @package GlitterBomb
@@ -39,20 +39,6 @@ function glitter_bomb_block_init() {
 add_action( 'init', 'glitter_bomb_block_init' );
 
 /**
- * Load plugin text domain for translations.
- *
- * @since 1.0.0
- */
-function glitter_bomb_load_textdomain() {
-	load_plugin_textdomain(
-		'glitter-bomb',
-		false,
-		dirname( plugin_basename( __FILE__ ) ) . '/languages'
-	);
-}
-add_action( 'plugins_loaded', 'glitter_bomb_load_textdomain' );
-
-/**
  * Add plugin action links.
  *
  * @since 1.0.0
@@ -63,7 +49,7 @@ function glitter_bomb_plugin_action_links( $links ) {
 	$settings_link = sprintf(
 		'<a href="%s">%s</a>',
 		admin_url( 'post-new.php?post_type=page' ),
-		__( 'Add Block', 'glitter-bomb' )
+		__( 'Add Block', 'glitterbomb' )
 	);
 	
 	array_unshift( $links, $settings_link );

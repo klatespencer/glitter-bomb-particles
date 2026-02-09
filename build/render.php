@@ -99,6 +99,9 @@ if ( ! function_exists( 'glitter_bomb_sanitize_number' ) ) {
 // INPUT VALIDATION
 // =======================
 
+// Wrap in closure to keep variables out of global scope.
+( function ( $attributes ) {
+
 // Validate experience mode (whitelist)
 $experience_mode = glitter_bomb_sanitize_enum(
 	isset( $attributes['experienceMode'] ) ? $attributes['experienceMode'] : 'particle-field',
@@ -304,7 +307,8 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 ) );
 ?>
 
-<div <?php echo $wrapper_attributes; ?>>
+<div <?php echo wp_kses_post( $wrapper_attributes ); ?>>
 	<!-- Glitter Bomb Particles will be rendered via JavaScript -->
 	<!-- All rendering happens client-side for security isolation -->
 </div>
+<?php } )( $attributes );
