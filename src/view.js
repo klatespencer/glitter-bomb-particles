@@ -383,7 +383,7 @@
 
 			// STEP 2: Determine initial state from sessionStorage or enabledByDefault
 			const savedState = sessionStorage.getItem('glitterBombActive');
-			
+
 			// CRITICAL FIX: Use a single source of truth
 			if (savedState !== null) {
 				// User has previously set a preference - respect it
@@ -395,11 +395,17 @@
 				sessionStorage.setItem('glitterBombActive', this.isActive.toString());
 			}
 
+			// Respect reduced motion preference by not auto-starting,
+			// but users can still opt in via the toggle button
+			if (prefersReducedMotion) {
+				this.isActive = false;
+			}
+
 			// STEP 3: Update button UI to match state
 			this.updateButtonUI();
 
-			// STEP 4: If active and motion not reduced, initialize particles and start
-			if (this.isActive && !prefersReducedMotion) {
+			// STEP 4: If active, initialize particles and start
+			if (this.isActive) {
 				// For particle field, initialize the field FIRST
 				if (this.config.experienceMode === 'particle-field') {
 					this.initializeParticleField();
@@ -622,7 +628,7 @@
 				this.mouseY = e.clientY;
 				this.mouseInViewport = true;
 				
-				if (this.isActive && !prefersReducedMotion) {
+				if (this.isActive) {
 					if (this.config.experienceMode === 'sprinkle-trail') {
 						this.createParticle(e.clientX, e.clientY);
 					}
@@ -641,7 +647,7 @@
 
 			// Touch events - simpler without aggressive throttling
 			this.touchMoveHandler = (e) => {
-				if (!this.isActive || prefersReducedMotion) return;
+				if (!this.isActive) return;
 				
 				const touch = e.touches[0];
 				
@@ -661,7 +667,7 @@
 
 			// Touch start handler
 			this.touchStartHandler = (e) => {
-				if (!this.isActive || prefersReducedMotion) return;
+				if (!this.isActive) return;
 				
 				const touch = e.touches[0];
 				this.mouseX = touch.clientX;
@@ -676,8 +682,8 @@
 
 			// Click handler for particle field explosions
 			this.clickHandler = (e) => {
-				if (this.isActive && !prefersReducedMotion && 
-					this.config.experienceMode === 'particle-field' && 
+				if (this.isActive &&
+					this.config.experienceMode === 'particle-field' &&
 					this.config.fieldClickExplosion) {
 					this.createExplosion(e.clientX, e.clientY);
 				}
@@ -685,8 +691,8 @@
 
 			// Touch tap handler for explosions
 			this.touchTapHandler = (e) => {
-				if (this.isActive && !prefersReducedMotion && 
-					this.config.experienceMode === 'particle-field' && 
+				if (this.isActive &&
+					this.config.experienceMode === 'particle-field' &&
 					this.config.fieldClickExplosion) {
 					const touch = e.changedTouches[0];
 					this.createExplosion(touch.clientX, touch.clientY);
@@ -702,7 +708,7 @@
 			this.visibilityChangeHandler = () => {
 				this.isTabVisible = !document.hidden;
 				
-				if (this.isTabVisible && this.isActive && !prefersReducedMotion) {
+				if (this.isTabVisible && this.isActive) {
 					// Resume animation when tab becomes visible
 					if (!this.animationFrameId) {
 						this.lastFrameTime = performance.now();
@@ -758,7 +764,7 @@
 				: 'Sparkle effects disabled.';
 			this.srAnnouncement.textContent = announcement;
 
-			if (this.isActive && !prefersReducedMotion) {
+			if (this.isActive) {
 				// Initialize particles if needed
 				if (this.config.experienceMode === 'particle-field') {
 					this.initializeParticleField();
