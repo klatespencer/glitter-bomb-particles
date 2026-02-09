@@ -423,21 +423,22 @@
 			this.canvas = document.createElement('canvas');
 			this.canvas.className = 'glitter-bomb-canvas';
 			this.canvas.setAttribute('aria-hidden', 'true');
-			
-			// Calculate canvas scaling for mobile devices
-			this.calculateCanvasSize();
-			
+
 			document.body.appendChild(this.canvas);
-			
+
 			// SAFARI PRIVACY: Get context with explicit non-fingerprinting attributes
 			// Setting willReadFrequently: false signals this is purely visual rendering
 			// Setting alpha: true is standard for transparency (not fingerprinting)
 			// Setting desynchronized: true can improve performance and signals animation intent
+			// IMPORTANT: Context must be created BEFORE calculateCanvasSize so ctx.scale() is applied
 			this.ctx = this.canvas.getContext('2d', {
 				alpha: true,
 				willReadFrequently: false,
 				desynchronized: true
 			});
+
+			// Calculate canvas scaling (must be after ctx is set for proper DPI scaling)
+			this.calculateCanvasSize();
 		}
 
 		// Get true viewport height accounting for mobile browser UI
