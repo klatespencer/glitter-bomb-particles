@@ -1004,11 +1004,12 @@
 		updateSprinkleParticles(currentTime) {
 			const isCompact = this.config.displayBehavior === 'compact';
 			const activeParticles = this.particlePool.getActive();
+			const particleCount = activeParticles.length;
 
 			// Process particles in reverse to safely remove dead ones
 			for (let i = activeParticles.length - 1; i >= 0; i--) {
 				const particle = activeParticles[i];
-				
+
 				// Calculate age and life ratio
 				const age = currentTime - particle.birthTime;
 				const lifeRatio = Math.max(0, 1 - (age / particle.maxLife));
@@ -1019,17 +1020,17 @@
 					particle.y += particle.vy;
 				}
 
-				// Smooth fade using cubic easing for more organic feel
-				if (isCompact) {
-					// Smooth cubic fade
-					particle.opacity = this.config.particleOpacity * Math.pow(lifeRatio, 2);
-				} else {
-					// Gentler quadratic fade for scattered
-					particle.opacity = this.config.particleOpacity * Math.pow(lifeRatio, 1.5);
-				}
+				// Sequential fade using both age and position in trail
+				// positionRatio: oldest particle (index 0) is dimmest, newest is brightest
+				const positionRatio = particleCount > 1 ? (i + 1) / particleCount : 1;
+
+				// Use the lower of age-based or position-based fade:
+				// - Slow movement: lifeRatio naturally varies, creating gradient
+				// - Fast movement: lifeRatio is similar for all, positionRatio creates gradient
+				particle.opacity = this.config.particleOpacity * Math.min(lifeRatio, positionRatio);
 
 				// Remove dead particles or particles that went too far off-screen
-				if (age >= particle.maxLife || particle.opacity <= 0.01 || 
+				if (age >= particle.maxLife || particle.opacity <= 0.01 ||
 					(Math.abs(particle.x) > this.logicalWidth * 2 || Math.abs(particle.y) > this.logicalHeight * 2)) {
 					this.particlePool.release(particle);
 				}
