@@ -80,7 +80,7 @@ Transform your entire page into a magical canvas filled with hundreds of shimmer
 
 **💻 Developer Friendly:**
 
-* Clean (isH, well-documented code
+* Clean-ish, well-documented code
 * WordPress coding standards compliant
 * No external dependencies
 * Lightweight bundle size
@@ -242,7 +242,7 @@ Please use the WordPress.org support forum for this plugin. We actively monitor 
 
 == Changelog ==
 
-= 1.0.0 - 2024 =
+= 1.0.0 - 2026 =
 * Initial release
 * **Two Experience Modes**:
   * Sprinkle Trail: Cursor/touch-following particle effects
@@ -335,4 +335,4 @@ For support, please use the WordPress.org support forum for this plugin.
 
 == Contributing ==
 
-I welcome contributions! If you'd like to contribute code, report bugs, or suggest features, please visit my GitHub repository (link available on WordPress.org plugin page).
+I welcome contributions! If you'd like to contribute code, report bugs, or suggest features, please visit the GitHub repository: https://github.com/klatespencer
