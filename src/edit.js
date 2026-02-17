@@ -74,329 +74,329 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Particle Experience', 'glitterbomb' ) } initialOpen={ true }>
+				<PanelBody title={ __( 'Particle Experience', 'glitter-bomb' ) } initialOpen={ true }>
 					<SelectControl
-						label={ __( 'Experience Mode', 'glitterbomb' ) }
+						label={ __( 'Experience Mode', 'glitter-bomb' ) }
 						value={ experienceMode }
 						options={ [
-							{ label: __( 'Sprinkle Trail', 'glitterbomb' ), value: 'sprinkle-trail' },
-							{ label: __( 'Particle Field', 'glitterbomb' ), value: 'particle-field' },
+							{ label: __( 'Sprinkle Trail', 'glitter-bomb' ), value: 'sprinkle-trail' },
+							{ label: __( 'Particle Field', 'glitter-bomb' ), value: 'particle-field' },
 						] }
 						onChange={ ( value ) => setAttributes( { experienceMode: value } ) }
 						help={ experienceMode === 'sprinkle-trail' 
-							? __( 'Particles follow cursor with optional scatter or compact trail effect', 'glitterbomb' )
-							: __( 'Magical full-screen field of shimmering glitter particles with physics-based movement', 'glitterbomb' )
+							? __( 'Particles follow cursor with optional scatter or compact trail effect', 'glitter-bomb' )
+							: __( 'Magical full-screen field of shimmering glitter particles with physics-based movement', 'glitter-bomb' )
 						}
 					/>
 				</PanelBody>
 
-				<PanelBody title={ __( 'Mobile Settings', 'glitterbomb' ) } initialOpen={ false }>
+				<PanelBody title={ __( 'Mobile Settings', 'glitter-bomb' ) } initialOpen={ false }>
 					<ToggleControl
-						label={ __( 'Disable on Mobile', 'glitterbomb' ) }
-						help={ __( 'Turn off particle effects entirely on mobile devices. Recommended for optimal performance on lower-end mobile devices.', 'glitterbomb' ) }
+						label={ __( 'Disable on Mobile', 'glitter-bomb' ) }
+						help={ __( 'Turn off particle effects entirely on mobile devices. Recommended for optimal performance on lower-end mobile devices.', 'glitter-bomb' ) }
 						checked={ disableOnMobile }
 						onChange={ ( value ) => setAttributes( { disableOnMobile: value } ) }
 					/>
 					<Notice status="info" isDismissible={ false }>
-						{ __( '💡 Mobile Performance: This block is optimized for mobile with reduced canvas resolution, touch event throttling, and particle culling. However, disabling on mobile can further improve performance on older devices.', 'glitterbomb' ) }
+						{ __( '💡 Mobile Performance: This block is optimized for mobile with reduced canvas resolution, touch event throttling, and particle culling. However, disabling on mobile can further improve performance on older devices.', 'glitter-bomb' ) }
 					</Notice>
 				</PanelBody>
 
-				<PanelBody title={ __( 'Button Settings', 'glitterbomb' ) } initialOpen={ false }>
+				<PanelBody title={ __( 'Button Settings', 'glitter-bomb' ) } initialOpen={ false }>
 					<ToggleControl
-						label={ __( 'Enable by default', 'glitterbomb' ) }
-						help={ __( 'When enabled, effects will be active when the page loads. Users can still toggle them off.', 'glitterbomb' ) }
+						label={ __( 'Enable by default', 'glitter-bomb' ) }
+						help={ __( 'When enabled, effects will be active when the page loads. Users can still toggle them off.', 'glitter-bomb' ) }
 						checked={ enabledByDefault }
 						onChange={ ( value ) => setAttributes( { enabledByDefault: value } ) }
 					/>
 
 					<TextControl
-						label={ __( 'Enable Button Text', 'glitterbomb' ) }
+						label={ __( 'Enable Button Text', 'glitter-bomb' ) }
 						value={ enableButtonText }
 						onChange={ ( value ) => setAttributes( { enableButtonText: value } ) }
-						help={ __( 'Text shown when effects are disabled', 'glitterbomb' ) }
+						help={ __( 'Text shown when effects are disabled', 'glitter-bomb' ) }
 					/>
 
 					<PanelColorSettings
-						title={ __( 'Enable Button Colors', 'glitterbomb' ) }
+						title={ __( 'Enable Button Colors', 'glitter-bomb' ) }
 						colorSettings={ [
 							{
 								value: enableButtonTextColor,
 								onChange: ( value ) => setAttributes( { enableButtonTextColor: value } ),
-								label: __( 'Text Color', 'glitterbomb' ),
+								label: __( 'Text Color', 'glitter-bomb' ),
 							},
 							{
 								value: enableButtonBackgroundColor,
 								onChange: ( value ) => setAttributes( { enableButtonBackgroundColor: value } ),
-								label: __( 'Background Color', 'glitterbomb' ),
+								label: __( 'Background Color', 'glitter-bomb' ),
 							},
 						] }
 					/>
 
 					<PanelColorSettings
-						title={ __( 'Enable Button Gradient (Optional)', 'glitterbomb' ) }
+						title={ __( 'Enable Button Gradient (Optional)', 'glitter-bomb' ) }
 						colorSettings={ [
 							{
 								value: enableButtonGradientStart,
 								onChange: ( value ) => setAttributes( { enableButtonGradientStart: value } ),
-								label: __( 'Gradient Start', 'glitterbomb' ),
+								label: __( 'Gradient Start', 'glitter-bomb' ),
 							},
 							{
 								value: enableButtonGradientEnd,
 								onChange: ( value ) => setAttributes( { enableButtonGradientEnd: value } ),
-								label: __( 'Gradient End', 'glitterbomb' ),
+								label: __( 'Gradient End', 'glitter-bomb' ),
 							},
 						] }
 					/>
 
 					<TextControl
-						label={ __( 'Disable Button Text', 'glitterbomb' ) }
+						label={ __( 'Disable Button Text', 'glitter-bomb' ) }
 						value={ disableButtonText }
 						onChange={ ( value ) => setAttributes( { disableButtonText: value } ) }
-						help={ __( 'Text shown when effects are enabled', 'glitterbomb' ) }
+						help={ __( 'Text shown when effects are enabled', 'glitter-bomb' ) }
 					/>
 
 					<PanelColorSettings
-						title={ __( 'Disable Button Colors', 'glitterbomb' ) }
+						title={ __( 'Disable Button Colors', 'glitter-bomb' ) }
 						colorSettings={ [
 							{
 								value: disableButtonTextColor,
 								onChange: ( value ) => setAttributes( { disableButtonTextColor: value } ),
-								label: __( 'Text Color', 'glitterbomb' ),
+								label: __( 'Text Color', 'glitter-bomb' ),
 							},
 							{
 								value: disableButtonBackgroundColor,
 								onChange: ( value ) => setAttributes( { disableButtonBackgroundColor: value } ),
-								label: __( 'Background Color', 'glitterbomb' ),
+								label: __( 'Background Color', 'glitter-bomb' ),
 							},
 						] }
 					/>
 
 					<PanelColorSettings
-						title={ __( 'Disable Button Gradient (Optional)', 'glitterbomb' ) }
+						title={ __( 'Disable Button Gradient (Optional)', 'glitter-bomb' ) }
 						colorSettings={ [
 							{
 								value: disableButtonGradientStart,
 								onChange: ( value ) => setAttributes( { disableButtonGradientStart: value } ),
-								label: __( 'Gradient Start', 'glitterbomb' ),
+								label: __( 'Gradient Start', 'glitter-bomb' ),
 							},
 							{
 								value: disableButtonGradientEnd,
 								onChange: ( value ) => setAttributes( { disableButtonGradientEnd: value } ),
-								label: __( 'Gradient End', 'glitterbomb' ),
+								label: __( 'Gradient End', 'glitter-bomb' ),
 							},
 						] }
 					/>
 
 					<SelectControl
-						label={ __( 'Button Position', 'glitterbomb' ) }
+						label={ __( 'Button Position', 'glitter-bomb' ) }
 						value={ buttonPosition }
 						options={ [
-							{ label: __( 'Top Left', 'glitterbomb' ), value: 'top-left' },
-							{ label: __( 'Top Right', 'glitterbomb' ), value: 'top-right' },
-							{ label: __( 'Bottom Left', 'glitterbomb' ), value: 'bottom-left' },
-							{ label: __( 'Bottom Right', 'glitterbomb' ), value: 'bottom-right' },
+							{ label: __( 'Top Left', 'glitter-bomb' ), value: 'top-left' },
+							{ label: __( 'Top Right', 'glitter-bomb' ), value: 'top-right' },
+							{ label: __( 'Bottom Left', 'glitter-bomb' ), value: 'bottom-left' },
+							{ label: __( 'Bottom Right', 'glitter-bomb' ), value: 'bottom-right' },
 						] }
 						onChange={ ( value ) => setAttributes( { buttonPosition: value } ) }
-						help={ __( 'Choose where to display the toggle button', 'glitterbomb' ) }
+						help={ __( 'Choose where to display the toggle button', 'glitter-bomb' ) }
 					/>
 				</PanelBody>
 
 				{ isSprinkleTrail && (
-					<PanelBody title={ __( 'Sprinkle Trail Settings', 'glitterbomb' ) } initialOpen={ true }>
+					<PanelBody title={ __( 'Sprinkle Trail Settings', 'glitter-bomb' ) } initialOpen={ true }>
 						<SelectControl
-							label={ __( 'Display Behavior', 'glitterbomb' ) }
+							label={ __( 'Display Behavior', 'glitter-bomb' ) }
 							value={ displayBehavior }
 							options={ [
-								{ label: __( 'Scattered', 'glitterbomb' ), value: 'scattered' },
-								{ label: __( 'Compact', 'glitterbomb' ), value: 'compact' },
+								{ label: __( 'Scattered', 'glitter-bomb' ), value: 'scattered' },
+								{ label: __( 'Compact', 'glitter-bomb' ), value: 'compact' },
 							] }
 							onChange={ ( value ) => setAttributes( { displayBehavior: value } ) }
-							help={ __( 'Scattered: particles drift outward as they fade. Compact: particles stay close to cursor path with faster fade.', 'glitterbomb' ) }
+							help={ __( 'Scattered: particles drift outward as they fade. Compact: particles stay close to cursor path with faster fade.', 'glitter-bomb' ) }
 						/>
 
 						<SelectControl
-							label={ __( 'Color Palette', 'glitterbomb' ) }
+							label={ __( 'Color Palette', 'glitter-bomb' ) }
 							value={ colorPalette }
 							options={ [
-								{ label: __( 'Rainbow (cycling)', 'glitterbomb' ), value: 'rainbow-cycling' },
-								{ label: __( 'Metallic (cycling)', 'glitterbomb' ), value: 'metallic' },
-								{ label: __( 'Neutral Spectrum (cycling)', 'glitterbomb' ), value: 'neutral-spectrum' },
-								{ label: __( 'Warm Sunset (cycling)', 'glitterbomb' ), value: 'warm-sunset' },
-								{ label: __( 'Cool Ocean (cycling)', 'glitterbomb' ), value: 'cool-ocean' },
-								{ label: __( 'Custom Color', 'glitterbomb' ), value: 'custom' },
+								{ label: __( 'Rainbow (cycling)', 'glitter-bomb' ), value: 'rainbow-cycling' },
+								{ label: __( 'Metallic (cycling)', 'glitter-bomb' ), value: 'metallic' },
+								{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
+								{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
+								{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
+								{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
 							] }
 							onChange={ ( value ) => setAttributes( { colorPalette: value } ) }
-							help={ __( 'Choose a color palette for the particles. All palettes except Custom cycle through colors automatically.', 'glitterbomb' ) }
+							help={ __( 'Choose a color palette for the particles. All palettes except Custom cycle through colors automatically.', 'glitter-bomb' ) }
 						/>
 
 						{ colorPalette === 'custom' && (
 							<PanelColorSettings
-								title={ __( 'Custom Particle Color', 'glitterbomb' ) }
+								title={ __( 'Custom Particle Color', 'glitter-bomb' ) }
 								colorSettings={ [
 									{
 										value: customColor,
 										onChange: ( value ) => setAttributes( { customColor: value } ),
-										label: __( 'Particle Color', 'glitterbomb' ),
+										label: __( 'Particle Color', 'glitter-bomb' ),
 									},
 								] }
 							/>
 						) }
 
 						<RangeControl
-							label={ __( 'Particle Opacity', 'glitterbomb' ) }
+							label={ __( 'Particle Opacity', 'glitter-bomb' ) }
 							value={ particleOpacity }
 							onChange={ ( value ) => setAttributes( { particleOpacity: value } ) }
 							min={ 0.1 }
 							max={ 1 }
 							step={ 0.1 }
-							help={ __( 'Adjust the transparency of the particles', 'glitterbomb' ) }
+							help={ __( 'Adjust the transparency of the particles', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Particle Size - Desktop (px)', 'glitterbomb' ) }
+							label={ __( 'Particle Size - Desktop (px)', 'glitter-bomb' ) }
 							value={ particleSize }
 							onChange={ ( value ) => setAttributes( { particleSize: value } ) }
 							min={ 4 }
 							max={ 30 }
 							step={ 0.5 }
-							help={ __( 'Set the size of each particle on desktop devices', 'glitterbomb' ) }
+							help={ __( 'Set the size of each particle on desktop devices', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Particle Size - Mobile (px)', 'glitterbomb' ) }
+							label={ __( 'Particle Size - Mobile (px)', 'glitter-bomb' ) }
 							value={ particleSizeMobile }
 							onChange={ ( value ) => setAttributes( { particleSizeMobile: value } ) }
 							min={ 3 }
 							max={ 20 }
 							step={ 0.5 }
-							help={ __( 'Set the size of each particle on mobile devices', 'glitterbomb' ) }
+							help={ __( 'Set the size of each particle on mobile devices', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Animation Duration (ms)', 'glitterbomb' ) }
+							label={ __( 'Animation Duration (ms)', 'glitter-bomb' ) }
 							value={ animationDuration }
 							onChange={ ( value ) => setAttributes( { animationDuration: value } ) }
 							min={ 500 }
 							max={ 5000 }
 							step={ 100 }
-							help={ __( 'How long particles take to fade out', 'glitterbomb' ) }
+							help={ __( 'How long particles take to fade out', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Maximum Particles', 'glitterbomb' ) }
+							label={ __( 'Maximum Particles', 'glitter-bomb' ) }
 							value={ maxParticles }
 							onChange={ ( value ) => setAttributes( { maxParticles: value } ) }
 							min={ 10 }
 							max={ 100 }
 							step={ 5 }
-							help={ __( 'Limit the number of particles for performance (max 100)', 'glitterbomb' ) }
+							help={ __( 'Limit the number of particles for performance (max 100)', 'glitter-bomb' ) }
 						/>
 					</PanelBody>
 				) }
 
 				{ isParticleField && (
-					<PanelBody title={ __( 'Particle Field Settings', 'glitterbomb' ) } initialOpen={ true }>
+					<PanelBody title={ __( 'Particle Field Settings', 'glitter-bomb' ) } initialOpen={ true }>
 						<SelectControl
-							label={ __( 'Color Palette', 'glitterbomb' ) }
+							label={ __( 'Color Palette', 'glitter-bomb' ) }
 							value={ fieldColorPalette }
 							options={ [
-								{ label: __( 'Metallic (cycling)', 'glitterbomb' ), value: 'metallic' },
-								{ label: __( 'Rainbow (cycling)', 'glitterbomb' ), value: 'rainbow-cycling' },
-								{ label: __( 'Neutral Spectrum (cycling)', 'glitterbomb' ), value: 'neutral-spectrum' },
-								{ label: __( 'Warm Sunset (cycling)', 'glitterbomb' ), value: 'warm-sunset' },
-								{ label: __( 'Cool Ocean (cycling)', 'glitterbomb' ), value: 'cool-ocean' },
-								{ label: __( 'Custom Color', 'glitterbomb' ), value: 'custom' },
+								{ label: __( 'Metallic (cycling)', 'glitter-bomb' ), value: 'metallic' },
+								{ label: __( 'Rainbow (cycling)', 'glitter-bomb' ), value: 'rainbow-cycling' },
+								{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
+								{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
+								{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
+								{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
 							] }
 							onChange={ ( value ) => setAttributes( { fieldColorPalette: value } ) }
-							help={ __( 'Choose a color palette for the glitter particles', 'glitterbomb' ) }
+							help={ __( 'Choose a color palette for the glitter particles', 'glitter-bomb' ) }
 						/>
 
 						{ fieldColorPalette === 'custom' && (
 							<PanelColorSettings
-								title={ __( 'Custom Particle Color', 'glitterbomb' ) }
+								title={ __( 'Custom Particle Color', 'glitter-bomb' ) }
 								colorSettings={ [
 									{
 										value: customColor,
 										onChange: ( value ) => setAttributes( { customColor: value } ),
-										label: __( 'Particle Color', 'glitterbomb' ),
+										label: __( 'Particle Color', 'glitter-bomb' ),
 									},
 								] }
 							/>
 						) }
 
 						<RangeControl
-							label={ __( 'Particle Count', 'glitterbomb' ) }
+							label={ __( 'Particle Count', 'glitter-bomb' ) }
 							value={ fieldParticleCount }
 							onChange={ ( value ) => setAttributes( { fieldParticleCount: value } ) }
 							min={ 50 }
 							max={ 500 }
 							step={ 25 }
-							help={ __( 'Number of glitter particles in the field', 'glitterbomb' ) }
+							help={ __( 'Number of glitter particles in the field', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Particle Size - Desktop (px)', 'glitterbomb' ) }
+							label={ __( 'Particle Size - Desktop (px)', 'glitter-bomb' ) }
 							value={ fieldParticleSize }
 							onChange={ ( value ) => setAttributes( { fieldParticleSize: value } ) }
 							min={ 2 }
 							max={ 12 }
 							step={ 0.5 }
-							help={ __( 'Set the base size of each glitter particle on desktop devices', 'glitterbomb' ) }
+							help={ __( 'Set the base size of each glitter particle on desktop devices', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Particle Size - Mobile (px)', 'glitterbomb' ) }
+							label={ __( 'Particle Size - Mobile (px)', 'glitter-bomb' ) }
 							value={ fieldParticleSizeMobile }
 							onChange={ ( value ) => setAttributes( { fieldParticleSizeMobile: value } ) }
 							min={ 1.5 }
 							max={ 8 }
 							step={ 0.5 }
-							help={ __( 'Set the base size of each glitter particle on mobile devices', 'glitterbomb' ) }
+							help={ __( 'Set the base size of each glitter particle on mobile devices', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Mouse Attraction', 'glitterbomb' ) }
+							label={ __( 'Mouse Attraction', 'glitter-bomb' ) }
 							value={ fieldMouseAttraction }
 							onChange={ ( value ) => setAttributes( { fieldMouseAttraction: value } ) }
 							min={ 0 }
 							max={ 1 }
 							step={ 0.1 }
-							help={ __( 'How strongly particles are attracted to cursor', 'glitterbomb' ) }
+							help={ __( 'How strongly particles are attracted to cursor', 'glitter-bomb' ) }
 						/>
 
 						<RangeControl
-							label={ __( 'Spread Strength', 'glitterbomb' ) }
+							label={ __( 'Spread Strength', 'glitter-bomb' ) }
 							value={ fieldSpreadStrength }
 							onChange={ ( value ) => setAttributes( { fieldSpreadStrength: value } ) }
 							min={ 0 }
 							max={ 1 }
 							step={ 0.1 }
-							help={ __( 'How much particles spread apart from each other', 'glitterbomb' ) }
+							help={ __( 'How much particles spread apart from each other', 'glitter-bomb' ) }
 						/>
 
 						<ToggleControl
-							label={ __( 'Click Explosion Effect', 'glitterbomb' ) }
-							help={ __( 'Enable sparkle explosion burst on mouse click', 'glitterbomb' ) }
+							label={ __( 'Click Explosion Effect', 'glitter-bomb' ) }
+							help={ __( 'Enable sparkle explosion burst on mouse click', 'glitter-bomb' ) }
 							checked={ fieldClickExplosion }
 							onChange={ ( value ) => setAttributes( { fieldClickExplosion: value } ) }
 						/>
 					</PanelBody>
 				) }
 
-				<PanelBody title={ __( 'Accessibility', 'glitterbomb' ) } initialOpen={ false }>
+				<PanelBody title={ __( 'Accessibility', 'glitter-bomb' ) } initialOpen={ false }>
 					<Notice status="info" isDismissible={ false }>
-						{ __( 'This block is WCAG 2.2 AA compliant with full keyboard navigation, screen reader support, and reduced motion respect.', 'glitterbomb' ) }
+						{ __( 'This block is WCAG 2.2 AA compliant with full keyboard navigation, screen reader support, and reduced motion respect.', 'glitter-bomb' ) }
 					</Notice>
 					<p>
-						{ __( 'Accessibility features:', 'glitterbomb' ) }
+						{ __( 'Accessibility features:', 'glitter-bomb' ) }
 					</p>
 					<ul>
-						<li>{ __( '✓ Keyboard activation (Enter/Space)', 'glitterbomb' ) }</li>
-						<li>{ __( '✓ Screen reader announcements', 'glitterbomb' ) }</li>
-						<li>{ __( '✓ Visible focus indicators', 'glitterbomb' ) }</li>
-						<li>{ __( '✓ Minimum 44x44px touch targets', 'glitterbomb' ) }</li>
-						<li>{ __( '✓ Respects prefers-reduced-motion', 'glitterbomb' ) }</li>
+						<li>{ __( '✓ Keyboard activation (Enter/Space)', 'glitter-bomb' ) }</li>
+						<li>{ __( '✓ Screen reader announcements', 'glitter-bomb' ) }</li>
+						<li>{ __( '✓ Visible focus indicators', 'glitter-bomb' ) }</li>
+						<li>{ __( '✓ Minimum 44x44px touch targets', 'glitter-bomb' ) }</li>
+						<li>{ __( '✓ Respects prefers-reduced-motion', 'glitter-bomb' ) }</li>
 					</ul>
 				</PanelBody>
 			</InspectorControls>
@@ -410,60 +410,60 @@ export default function Edit( { attributes, setAttributes } ) {
 					>
 						<div className="glitter-bomb-placeholder-header">
 							<span className="glitter-bomb-placeholder-emoji">✨💎✨</span>
-							<h3 className="glitter-bomb-placeholder-title">{ __( 'Glitter Bomb', 'glitterbomb' ) }</h3>
+							<h3 className="glitter-bomb-placeholder-title">{ __( 'Glitter Bomb', 'glitter-bomb' ) }</h3>
 							<Button
 								icon={ isExpanded ? chevronUp : chevronDown }
 								className="glitter-bomb-toggle-icon"
-								label={ isExpanded ? __( 'Collapse settings', 'glitterbomb' ) : __( 'Expand settings', 'glitterbomb' ) }
+								label={ isExpanded ? __( 'Collapse settings', 'glitter-bomb' ) : __( 'Expand settings', 'glitter-bomb' ) }
 							/>
 						</div>
 						<p className="glitter-bomb-placeholder-summary">
 							{ experienceMode === 'sprinkle-trail' 
-								? __( '✨ Sprinkle Trail Mode', 'glitterbomb' )
-								: __( '💫 Particle Field Mode', 'glitterbomb' )
+								? __( '✨ Sprinkle Trail Mode', 'glitter-bomb' )
+								: __( '💫 Particle Field Mode', 'glitter-bomb' )
 							}
 							{ ' • ' }
-							{ enabledByDefault ? __( 'Enabled by default', 'glitterbomb' ) : __( 'Disabled by default', 'glitterbomb' ) }
-							{ disableOnMobile ? ' • ' + __( 'Disabled on mobile', 'glitterbomb' ) : '' }
+							{ enabledByDefault ? __( 'Enabled by default', 'glitter-bomb' ) : __( 'Disabled by default', 'glitter-bomb' ) }
+							{ disableOnMobile ? ' • ' + __( 'Disabled on mobile', 'glitter-bomb' ) : '' }
 						</p>
 					</button>
 
 					{ isExpanded && (
 						<>
 							<p className="glitter-bomb-placeholder-description">
-								{ __( 'Magical particle effects will sparkle on your frontend! 🎆', 'glitterbomb' ) }
+								{ __( 'Magical particle effects will sparkle on your frontend! 🎆', 'glitter-bomb' ) }
 							</p>
 							<div className="glitter-bomb-placeholder-settings">
-								<p><strong>{ __( '✨ Current Settings:', 'glitterbomb' ) }</strong></p>
+								<p><strong>{ __( '✨ Current Settings:', 'glitter-bomb' ) }</strong></p>
 								<ul>
 									<li>
-										{ __( '🎨 Experience: ', 'glitterbomb' ) }
-										{ experienceMode === 'sprinkle-trail' ? __( 'Sprinkle Trail', 'glitterbomb' ) : __( 'Particle Field', 'glitterbomb' ) }
+										{ __( '🎨 Experience: ', 'glitter-bomb' ) }
+										{ experienceMode === 'sprinkle-trail' ? __( 'Sprinkle Trail', 'glitter-bomb' ) : __( 'Particle Field', 'glitter-bomb' ) }
 									</li>
 									<li>
-										{ __( '⚡ Default state: ', 'glitterbomb' ) }
-										{ enabledByDefault ? __( 'Enabled', 'glitterbomb' ) : __( 'Disabled', 'glitterbomb' ) }
+										{ __( '⚡ Default state: ', 'glitter-bomb' ) }
+										{ enabledByDefault ? __( 'Enabled', 'glitter-bomb' ) : __( 'Disabled', 'glitter-bomb' ) }
 									</li>
 									<li>
-										{ __( '📱 Mobile: ', 'glitterbomb' ) }
-										{ disableOnMobile ? __( 'Disabled', 'glitterbomb' ) : __( 'Enabled', 'glitterbomb' ) }
+										{ __( '📱 Mobile: ', 'glitter-bomb' ) }
+										{ disableOnMobile ? __( 'Disabled', 'glitter-bomb' ) : __( 'Enabled', 'glitter-bomb' ) }
 									</li>
 									{ isSprinkleTrail && (
 										<>
 											<li>
-												{ __( '🌈 Display: ', 'glitterbomb' ) }
-												{ displayBehavior === 'scattered' ? __( 'Scattered', 'glitterbomb' ) : __( 'Compact', 'glitterbomb' ) }
+												{ __( '🌈 Display: ', 'glitter-bomb' ) }
+												{ displayBehavior === 'scattered' ? __( 'Scattered', 'glitter-bomb' ) : __( 'Compact', 'glitter-bomb' ) }
 											</li>
 											<li>
-												{ __( '🎨 Colors: ', 'glitterbomb' ) }
-												{ colorPalette === 'custom' ? __( 'Custom', 'glitterbomb' ) : `${colorPalette} (cycling)` }
+												{ __( '🎨 Colors: ', 'glitter-bomb' ) }
+												{ colorPalette === 'custom' ? __( 'Custom', 'glitter-bomb' ) : `${colorPalette} (cycling)` }
 											</li>
 											<li>
-												{ __( '🔢 Max particles: ', 'glitterbomb' ) }
+												{ __( '🔢 Max particles: ', 'glitter-bomb' ) }
 												{ maxParticles }
 											</li>
 											<li>
-												{ __( '📏 Size: Desktop ', 'glitterbomb' ) }
+												{ __( '📏 Size: Desktop ', 'glitter-bomb' ) }
 												{ particleSize }px / Mobile { particleSizeMobile }px
 											</li>
 										</>
@@ -471,31 +471,31 @@ export default function Edit( { attributes, setAttributes } ) {
 									{ isParticleField && (
 										<>
 											<li>
-												{ __( '🎨 Colors: ', 'glitterbomb' ) }
-												{ fieldColorPalette === 'custom' ? __( 'Custom', 'glitterbomb' ) : `${fieldColorPalette} (cycling)` }
+												{ __( '🎨 Colors: ', 'glitter-bomb' ) }
+												{ fieldColorPalette === 'custom' ? __( 'Custom', 'glitter-bomb' ) : `${fieldColorPalette} (cycling)` }
 											</li>
 											<li>
-												{ __( '🔢 Particle count: ', 'glitterbomb' ) }
+												{ __( '🔢 Particle count: ', 'glitter-bomb' ) }
 												{ fieldParticleCount }
 											</li>
 											<li>
-												{ __( '📏 Size: Desktop ', 'glitterbomb' ) }
+												{ __( '📏 Size: Desktop ', 'glitter-bomb' ) }
 												{ fieldParticleSize }px / Mobile { fieldParticleSizeMobile }px
 											</li>
 											<li>
-												{ __( '💥 Click explosions: ', 'glitterbomb' ) }
-												{ fieldClickExplosion ? __( 'Enabled', 'glitterbomb' ) : __( 'Disabled', 'glitterbomb' ) }
+												{ __( '💥 Click explosions: ', 'glitter-bomb' ) }
+												{ fieldClickExplosion ? __( 'Enabled', 'glitter-bomb' ) : __( 'Disabled', 'glitter-bomb' ) }
 											</li>
 										</>
 									) }
 									<li>
-										{ __( '📍 Button position: ', 'glitterbomb' ) }
+										{ __( '📍 Button position: ', 'glitter-bomb' ) }
 										{ buttonPosition }
 									</li>
 								</ul>
 							</div>
 							<p className="glitter-bomb-placeholder-tip">
-								{ __( '💡 Tip: Use the settings panel on the right to customize your sparkle experience!', 'glitterbomb' ) }
+								{ __( '💡 Tip: Use the settings panel on the right to customize your sparkle experience!', 'glitter-bomb' ) }
 							</p>
 						</>
 					) }

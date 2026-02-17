@@ -10,7 +10,7 @@
  * Author URI:        https://github.com/klatespencer
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       glitterbomb
+ * Text Domain:       glitter-bomb
  * Domain Path:       /languages
  *
  * @package GlitterBomb
@@ -49,7 +49,7 @@ function glitter_bomb_plugin_action_links( $links ) {
 	$settings_link = sprintf(
 		'<a href="%s">%s</a>',
 		admin_url( 'post-new.php?post_type=page' ),
-		__( 'Add Block', 'glitterbomb' )
+		__( 'Add Block', 'glitter-bomb' )
 	);
 	
 	array_unshift( $links, $settings_link );
