@@ -256,11 +256,11 @@ $disable_button_gradient_end = glitter_bomb_sanitize_color(
 
 // Validate text fields with length limits and sanitization (XSS prevention)
 $enable_button_text = isset( $attributes['enableButtonText'] ) 
-	? wp_kses_post( substr( trim( (string) $attributes['enableButtonText'] ), 0, 100 ) )
+	? esc_html( substr( trim( (string) $attributes['enableButtonText'] ), 0, 100 ) )
 	: '✨ Enable Sparkles';
 
-$disable_button_text = isset( $attributes['disableButtonText'] ) 
-	? wp_kses_post( substr( trim( (string) $attributes['disableButtonText'] ), 0, 100 ) )
+$disable_button_text = isset( $attributes['disableButtonText'] )
+	? esc_html( substr( trim( (string) $attributes['disableButtonText'] ), 0, 100 ) )
 	: '✨ Disable Sparkles';
 
 // Validate boolean values (type safety)
@@ -307,7 +307,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 ) );
 ?>
 
-<div <?php echo wp_kses_post( $wrapper_attributes ); ?>>
+<div <?php echo wp_kses_data( $wrapper_attributes ); ?>>
 	<!-- Glitter Bomb will be rendered via JavaScript -->
 	<!-- All rendering happens client-side for security isolation -->
 </div>
