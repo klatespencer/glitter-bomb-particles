@@ -1,6 +1,6 @@
 === Glitter Bomb ===
 
-Contributors:      klatespencer
+Contributors:      klate
 Tags:              block, particles, glitter, animation, accessibility
 Tested up to:      6.9
 Stable tag:        1.0.0

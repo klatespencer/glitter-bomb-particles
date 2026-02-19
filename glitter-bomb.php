@@ -6,7 +6,7 @@
  * Version:           1.0.0
  * Requires at least: 6.1
  * Requires PHP:      7.4
- * Author:            klatespencer
+ * Author:            klate
  * Author URI:        https://github.com/klatespencer
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
