@@ -1,7 +1,7 @@
 === Glitter Bomb ===
 
 Contributors:      klate
-Tags:              block, particles, glitter, animation, accessibility
+Tags:              particles, animation, interactive, cursor, effects
 Tested up to:      6.9
 Stable tag:        1.0.0
 License:           GPLv2 or later
@@ -63,7 +63,7 @@ Yes. WCAG 2.2 AA compliant: keyboard navigation, screen reader announcements via
 
 = Will this slow down my site? =
 
-Yes, there's an inordinate amount of JavaScript making this work. Object pooling, particle culling, canvas scaling, and smart particle limits help keep it reasonable — but it's still a lot. Plan accordingly.
+Only on pages where the block is used — scripts and styles are loaded conditionally and won't touch pages that don't have the block. On pages that do have it, yes, there's an inordinate amount of JavaScript making this work. Object pooling, particle culling, canvas scaling, and smart particle limits help keep it reasonable — but it's still a lot. Plan accordingly.
 
 = Can users turn it off? =
 
