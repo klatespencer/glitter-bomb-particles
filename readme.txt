@@ -116,6 +116,17 @@ Bug fix for button width CLS and added Playground Live Preview support.
 = 1.0.0 =
 Initial release.
 
+== Privacy & Data ==
+
+Glitter Bomb respects your privacy:
+
+* **No external requests**: All code runs locally in the browser
+* **No tracking**: No analytics or user tracking
+* **No cookies**: Uses sessionStorage for user preferences (not persistent)
+* **No personal data**: Does not collect or transmit any user information
+* **GDPR compliant**: No personal data processing
+* **Safari privacy-friendly**: Non-fingerprinting canvas implementation
+
 == Contributing ==
 
 Bug reports and contributions welcome: [github.com/klatespencer](https://github.com/klatespencer)
