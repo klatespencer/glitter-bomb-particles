@@ -1,6 +1,6 @@
 {
     "name": "glitter-bomb",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Create magical, accessible particle effects with cursor-following sparkles and full-screen glitter fields. WCAG 2.2 AA compliant.",
     "author": "block authoring tool",
     "license": "GPL-2.0-or-later",

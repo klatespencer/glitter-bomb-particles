@@ -3,7 +3,7 @@
 Contributors:      klate
 Tags:              particles, animation, interactive, cursor, effects
 Tested up to:      6.9
-Stable tag:        1.0.0
+Stable tag:        1.0.1
 License:           GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 6.1
@@ -99,10 +99,19 @@ Yes — all effects run client-side, so cached pages work fine.
 
 == Changelog ==
 
+= 1.0.1 - 2026 =
+* Fix button width CLS by scoping transition to specific properties
+* Add WordPress Playground Live Preview support via blueprint.json
+* Update plugin description and readme copy
+* Add WCAG 2.1 reduced motion criterion link to accessibility FAQ
+
 = 1.0.0 - 2026 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Bug fix for button width CLS and added Playground Live Preview support.
 
 = 1.0.0 =
 Initial release.

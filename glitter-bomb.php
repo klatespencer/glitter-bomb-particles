@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Glitter Bomb
  * Plugin URI:        https://klatespencer.com/glitter-bomb/
- * Description:       Create magical, accessible particle effects with cursor-following sparkles and full-screen glitter fields. Two experience modes: Sprinkle Trail and Particle Field. WCAG 2.2 AA compliant with full keyboard and screen reader support.
- * Version:           1.0.0
+ * Description:       Create animated particle effects with cursor and touch following sparkles and full-screen glitter fields. Two experience modes: Sprinkle Trail and Particle Field. WCAG 2.2 AA compliant. Optimized for mobile.
+ * Version:           1.0.1
  * Requires at least: 6.1
  * Requires PHP:      7.4
  * Author:            klate
@@ -14,7 +14,7 @@
  * Domain Path:       /languages
  *
  * @package GlitterBomb
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'GLITTER_BOMB_VERSION', '1.0.0' );
+define( 'GLITTER_BOMB_VERSION', '1.0.1' );
 define( 'GLITTER_BOMB_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GLITTER_BOMB_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
