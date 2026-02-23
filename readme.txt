@@ -55,7 +55,7 @@ Yes. Particle trails follow your finger with smooth gesture tracking, tap trigge
 
 = Is it accessible? =
 
-Yes. WCAG 2.2 AA compliant: keyboard navigation, screen reader announcements via ARIA live regions, visible focus indicators, and automatic respect for `prefers-reduced-motion`.
+Yes. WCAG 2.2 AA compliant: keyboard navigation, screen reader announcements via ARIA live regions, visible focus indicators, and automatic respect for `prefers-reduced-motion` per [WCAG 2.1 Success Criterion 2.3.3](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html).
 
 = What's the difference between the two modes? =
 
