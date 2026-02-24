@@ -312,56 +312,61 @@ $enabled_by_default = isset( $attributes['enabledByDefault'] ) && $attributes['e
 $field_click_explosion = isset( $attributes['fieldClickExplosion'] ) && $attributes['fieldClickExplosion'] === true;
 $disable_on_mobile = isset( $attributes['disableOnMobile'] ) && $attributes['disableOnMobile'] === true;
 
-// Seasonal override attributes
-$seasonal_enabled = isset( $attributes['seasonalEnabled'] ) && $attributes['seasonalEnabled'] === true;
+// Seasonal override: iterate rules array, apply first active match
+$seasonal_enabled     = isset( $attributes['seasonalEnabled'] ) && $attributes['seasonalEnabled'] === true;
+$seasonal_rules_raw   = ( isset( $attributes['seasonalRules'] ) && is_array( $attributes['seasonalRules'] ) )
+	? $attributes['seasonalRules']
+	: array();
 
-// Parse combined 'experienceMode|style' value (e.g. 'particle-field|snow')
-$seasonal_style_raw      = isset( $attributes['seasonalStyle'] ) ? (string) $attributes['seasonalStyle'] : 'particle-field|snow';
-$seasonal_style_parts    = explode( '|', $seasonal_style_raw, 2 );
-$seasonal_mode_raw       = isset( $seasonal_style_parts[0] ) ? $seasonal_style_parts[0] : 'particle-field';
-$seasonal_style_name_raw = isset( $seasonal_style_parts[1] ) ? $seasonal_style_parts[1] : 'snow';
+if ( $seasonal_enabled && ! empty( $seasonal_rules_raw ) ) {
+	$is_field = ( $experience_mode === 'particle-field' );
+	$allowed_field_styles = array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks', 'autumn-leaves' );
+	$allowed_trail_styles = array( 'particles', 'emoji' );
 
-$seasonal_experience_mode = glitter_bomb_sanitize_enum(
-	$seasonal_mode_raw,
-	array( 'sprinkle-trail', 'particle-field' ),
-	'particle-field'
-);
+	foreach ( $seasonal_rules_raw as $rule ) {
+		if ( ! is_array( $rule ) ) {
+			continue;
+		}
 
-$allowed_seasonal_styles = ( $seasonal_experience_mode === 'particle-field' )
-	? array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks', 'autumn-leaves' )
-	: array( 'particles', 'emoji' );
-$seasonal_style_default = ( $seasonal_experience_mode === 'particle-field' ) ? 'snow' : 'particles';
+		// Validate date fields; 0 sentinel means invalid — skip the rule
+		$r_start_month = (int) glitter_bomb_sanitize_number( isset( $rule['startMonth'] ) ? $rule['startMonth'] : 0, 1, 12, 0 );
+		$r_start_day   = (int) glitter_bomb_sanitize_number( isset( $rule['startDay'] )   ? $rule['startDay']   : 0, 1, 31, 0 );
+		$r_end_month   = (int) glitter_bomb_sanitize_number( isset( $rule['endMonth'] )   ? $rule['endMonth']   : 0, 1, 12, 0 );
+		$r_end_day     = (int) glitter_bomb_sanitize_number( isset( $rule['endDay'] )     ? $rule['endDay']     : 0, 1, 31, 0 );
 
-$seasonal_style_name = glitter_bomb_sanitize_enum(
-	$seasonal_style_name_raw,
-	$allowed_seasonal_styles,
-	$seasonal_style_default
-);
+		if ( 0 === $r_start_month || 0 === $r_start_day || 0 === $r_end_month || 0 === $r_end_day ) {
+			continue;
+		}
 
-$seasonal_start_month = (int) glitter_bomb_sanitize_number(
-	isset( $attributes['seasonalStartMonth'] ) ? $attributes['seasonalStartMonth'] : 12,
-	1, 12, 12
-);
-$seasonal_start_day = (int) glitter_bomb_sanitize_number(
-	isset( $attributes['seasonalStartDay'] ) ? $attributes['seasonalStartDay'] : 1,
-	1, 31, 1
-);
-$seasonal_end_month = (int) glitter_bomb_sanitize_number(
-	isset( $attributes['seasonalEndMonth'] ) ? $attributes['seasonalEndMonth'] : 1,
-	1, 12, 1
-);
-$seasonal_end_day = (int) glitter_bomb_sanitize_number(
-	isset( $attributes['seasonalEndDay'] ) ? $attributes['seasonalEndDay'] : 5,
-	1, 31, 5
-);
+		if ( ! glitter_bomb_is_seasonal_active( $r_start_month, $r_start_day, $r_end_month, $r_end_day ) ) {
+			continue;
+		}
 
-// Apply seasonal override when enabled and within the configured date range
-if ( $seasonal_enabled && glitter_bomb_is_seasonal_active( $seasonal_start_month, $seasonal_start_day, $seasonal_end_month, $seasonal_end_day ) ) {
-	$experience_mode = $seasonal_experience_mode;
-	if ( $seasonal_experience_mode === 'particle-field' ) {
-		$field_particle_style = $seasonal_style_name;
-	} else {
-		$sprinkle_style = $seasonal_style_name;
+		// First active rule wins — apply and stop
+		if ( $is_field ) {
+			$field_particle_style = glitter_bomb_sanitize_enum(
+				isset( $rule['style'] ) ? (string) $rule['style'] : '',
+				$allowed_field_styles,
+				$field_particle_style
+			);
+		} else {
+			$rule_trail_style = glitter_bomb_sanitize_enum(
+				isset( $rule['style'] ) ? (string) $rule['style'] : '',
+				$allowed_trail_styles,
+				$sprinkle_style
+			);
+			$sprinkle_style = $rule_trail_style;
+
+			// Override emoji when the seasonal rule uses emoji style
+			if ( 'emoji' === $rule_trail_style && isset( $rule['emoji'] ) ) {
+				$rule_emoji = mb_substr( sanitize_text_field( (string) $rule['emoji'] ), 0, 8 );
+				if ( ! empty( $rule_emoji ) ) {
+					$sprinkle_emoji = $rule_emoji;
+				}
+			}
+		}
+
+		break;
 	}
 }
 

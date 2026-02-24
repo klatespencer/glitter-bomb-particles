@@ -47,24 +47,33 @@ function checkSeasonalActive( startMonth, startDay, endMonth, endDay ) {
 	return cur >= start || cur <= end;
 }
 
-const SEASONAL_STYLE_OPTIONS = [
-	{ label: '❄️  Snow (Particle Field)', value: 'particle-field|snow' },
-	{ label: '🎆  Fireworks (Particle Field)', value: 'particle-field|fireworks' },
-	{ label: '❤️  Love Bomb (Particle Field)', value: 'particle-field|love-bomb' },
-	{ label: '🌈  Pride Confetti (Particle Field)', value: 'particle-field|pride-confetti' },
-	{ label: '✨  Glitter (Particle Field)', value: 'particle-field|glitter' },
-	{ label: '🍂  Autumn Leaves (Particle Field)', value: 'particle-field|autumn-leaves' },
-	{ label: '✨  Sparkle Trail (Sprinkle)', value: 'sprinkle-trail|particles' },
-	{ label: '🎭  Emoji Trail (Sprinkle)', value: 'sprinkle-trail|emoji' },
+const FIELD_RULE_STYLE_OPTIONS = [
+	{ label: '❄️ Snow', value: 'snow' },
+	{ label: '🎆 Fireworks', value: 'fireworks' },
+	{ label: '❤️ Love Bomb', value: 'love-bomb' },
+	{ label: '🌈 Pride Confetti', value: 'pride-confetti' },
+	{ label: '🍂 Autumn Leaves', value: 'autumn-leaves' },
+	{ label: '✨ Glitter', value: 'glitter' },
 ];
 
-const SEASONAL_PRESETS = {
-	winter:     { seasonalStyle: 'particle-field|snow',           seasonalStartMonth: 12, seasonalStartDay: 1,  seasonalEndMonth: 1, seasonalEndDay: 5  },
-	valentines: { seasonalStyle: 'particle-field|love-bomb',      seasonalStartMonth: 2,  seasonalStartDay: 1,  seasonalEndMonth: 2, seasonalEndDay: 14 },
-	pride:      { seasonalStyle: 'particle-field|pride-confetti', seasonalStartMonth: 6,  seasonalStartDay: 1,  seasonalEndMonth: 6, seasonalEndDay: 30 },
-	july4:      { seasonalStyle: 'particle-field|fireworks',      seasonalStartMonth: 7,  seasonalStartDay: 1,  seasonalEndMonth: 7, seasonalEndDay: 7  },
-	newyears:   { seasonalStyle: 'particle-field|fireworks',      seasonalStartMonth: 12, seasonalStartDay: 31, seasonalEndMonth: 1, seasonalEndDay: 1  },
-};
+const FIELD_PRESETS = [
+	{ label: '❄️ Winter',        rule: { style: 'snow',           emoji: '✨', startMonth: 12, startDay: 1,  endMonth: 1, endDay: 5  } },
+	{ label: '❤️ Valentine’s', rule: { style: 'love-bomb',      emoji: '✨', startMonth: 2,  startDay: 1,  endMonth: 2, endDay: 14 } },
+	{ label: '🌈 Pride',          rule: { style: 'pride-confetti', emoji: '✨', startMonth: 6,  startDay: 1,  endMonth: 6, endDay: 30 } },
+	{ label: '🎆 July 4',         rule: { style: 'fireworks',      emoji: '✨', startMonth: 7,  startDay: 1,  endMonth: 7, endDay: 7  } },
+	{ label: '🎉 New Year’s',  rule: { style: 'fireworks',      emoji: '✨', startMonth: 12, startDay: 31, endMonth: 1, endDay: 1  } },
+	{ label: '🍂 Autumn',         rule: { style: 'autumn-leaves',  emoji: '✨', startMonth: 9,  startDay: 22, endMonth: 11, endDay: 30 } },
+];
+
+const TRAIL_PRESETS = [
+	{ label: '❄️ Winter',        rule: { style: 'emoji', emoji: '❄️', startMonth: 12, startDay: 1,  endMonth: 1, endDay: 5  } },
+	{ label: '❤️ Valentine’s', rule: { style: 'emoji', emoji: '❤️', startMonth: 2,  startDay: 1,  endMonth: 2, endDay: 14 } },
+	{ label: '🌈 Pride',          rule: { style: 'emoji', emoji: '🌈', startMonth: 6,  startDay: 1,  endMonth: 6, endDay: 30 } },
+	{ label: '🎆 July 4',         rule: { style: 'emoji', emoji: '🎆', startMonth: 7,  startDay: 1,  endMonth: 7, endDay: 7  } },
+	{ label: '🎉 New Year’s',  rule: { style: 'emoji', emoji: '🎉', startMonth: 12, startDay: 31, endMonth: 1, endDay: 1  } },
+	{ label: '🍂 Autumn',         rule: { style: 'emoji', emoji: '🍂', startMonth: 9,  startDay: 22, endMonth: 11, endDay: 30 } },
+];
+
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -109,11 +118,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		sprinkleEmoji,
 		disableOnMobile,
 		seasonalEnabled,
-		seasonalStyle,
-		seasonalStartMonth,
-		seasonalStartDay,
-		seasonalEndMonth,
-		seasonalEndDay,
+		seasonalRules,
 	} = attributes;
 
 	const isSprinkleTrail = experienceMode === 'sprinkle-trail';
@@ -519,81 +524,112 @@ export default function Edit( { attributes, setAttributes } ) {
 					<ToggleControl
 						label={ __( 'Enable seasonal style', 'glitter-bomb' ) }
 						help={ seasonalEnabled
-							? __( 'A different style shows during your active dates. Outside those dates, your default style shows.', 'glitter-bomb' )
-							: __( 'Your default style shows year-round. Enable to automatically swap to a different style on specific dates each year.', 'glitter-bomb' )
+							? __( 'Rules below swap your style on matching dates — first active rule wins.', 'glitter-bomb' )
+							: __( 'Your default style shows year-round. Enable to swap on specific dates each year.', 'glitter-bomb' )
 						}
 						checked={ seasonalEnabled }
 						onChange={ ( value ) => setAttributes( { seasonalEnabled: value } ) }
 					/>
 					{ seasonalEnabled && (
 						<>
-							<SelectControl
-								label={ __( 'Quick Preset', 'glitter-bomb' ) }
-								value=""
-								options={ [
-									{ label: __( '— Choose a preset —', 'glitter-bomb' ), value: '' },
-									{ label: '❄️  Winter (Dec 1 – Jan 5)', value: 'winter' },
-									{ label: "❤️  Valentine's Day (Feb 1–14)", value: 'valentines' },
-									{ label: '🌈  Pride Month (Jun 1–30)', value: 'pride' },
-									{ label: '🎆  Fourth of July (Jul 1–7)', value: 'july4' },
-									{ label: "🎉  New Year's (Dec 31 – Jan 1)", value: 'newyears' },
-								] }
-								onChange={ ( value ) => {
-									if ( value && SEASONAL_PRESETS[ value ] ) {
-										setAttributes( SEASONAL_PRESETS[ value ] );
-									}
-								} }
-								help={ __( 'One-click setup for common seasonal events. Fine-tune the dates below.', 'glitter-bomb' ) }
-							/>
-							<SelectControl
-								label={ __( 'Seasonal Style', 'glitter-bomb' ) }
-								value={ seasonalStyle }
-								options={ SEASONAL_STYLE_OPTIONS }
-								onChange={ ( value ) => setAttributes( { seasonalStyle: value } ) }
-								help={ __( 'The effect that shows during the active date range.', 'glitter-bomb' ) }
-							/>
-							<p style={ { fontWeight: 600, marginBottom: '4px' } }>{ __( 'Active From', 'glitter-bomb' ) }</p>
-							<div style={ { display: 'flex', gap: '8px' } }>
-								<SelectControl
-									label={ __( 'Month', 'glitter-bomb' ) }
-									value={ seasonalStartMonth }
-									options={ MONTH_OPTIONS }
-									onChange={ ( value ) => setAttributes( { seasonalStartMonth: parseInt( value, 10 ) } ) }
-								/>
-								<SelectControl
-									label={ __( 'Day', 'glitter-bomb' ) }
-									value={ seasonalStartDay }
-									options={ getDayOptions( seasonalStartMonth ) }
-									onChange={ ( value ) => setAttributes( { seasonalStartDay: parseInt( value, 10 ) } ) }
-								/>
+							<p style={ { fontWeight: 600, marginBottom: '6px' } }>{ __( 'Add a preset rule:', 'glitter-bomb' ) }</p>
+							<div style={ { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' } }>
+								{ ( isParticleField ? FIELD_PRESETS : TRAIL_PRESETS ).map( ( preset ) => (
+									<Button
+										key={ preset.label }
+										size="small"
+										variant="secondary"
+										onClick={ () => setAttributes( { seasonalRules: [ ...seasonalRules, preset.rule ] } ) }
+									>
+										{ preset.label }
+									</Button>
+								) ) }
 							</div>
-							<p style={ { fontWeight: 600, margin: '12px 0 4px' } }>{ __( 'Active Until', 'glitter-bomb' ) }</p>
-							<div style={ { display: 'flex', gap: '8px' } }>
-								<SelectControl
-									label={ __( 'Month', 'glitter-bomb' ) }
-									value={ seasonalEndMonth }
-									options={ MONTH_OPTIONS }
-									onChange={ ( value ) => setAttributes( { seasonalEndMonth: parseInt( value, 10 ) } ) }
-								/>
-								<SelectControl
-									label={ __( 'Day', 'glitter-bomb' ) }
-									value={ seasonalEndDay }
-									options={ getDayOptions( seasonalEndMonth ) }
-									onChange={ ( value ) => setAttributes( { seasonalEndDay: parseInt( value, 10 ) } ) }
-								/>
-							</div>
-							<p style={ { color: '#757575', fontSize: '12px', marginTop: '6px' } }>
-								{ __( '🔄 Repeats every year — no updates needed.', 'glitter-bomb' ) }
-							</p>
-							{ checkSeasonalActive( seasonalStartMonth, seasonalStartDay, seasonalEndMonth, seasonalEndDay ) ? (
-								<Notice status="success" isDismissible={ false }>
-									{ __( '🟢 Currently active — visitors see the seasonal style right now.', 'glitter-bomb' ) }
-								</Notice>
-							) : (
-								<Notice status="info" isDismissible={ false }>
-									{ `🔵 ${ __( 'Not currently active. Will activate:', 'glitter-bomb' ) } ${ MONTHS[ seasonalStartMonth - 1 ] } ${ seasonalStartDay }` }
-								</Notice>
+							{ seasonalRules.length === 0 && (
+								<p style={ { color: '#757575', fontSize: '12px', marginBottom: '8px' } }>
+									{ __( 'No rules yet. Use a preset above or add a custom rule below.', 'glitter-bomb' ) }
+								</p>
 							) }
+							{ seasonalRules.map( ( rule, ruleIdx ) => {
+								const isRuleActive = checkSeasonalActive( rule.startMonth || 1, rule.startDay || 1, rule.endMonth || 1, rule.endDay || 31 );
+								const showEmoji = ! isParticleField && ( rule.style === 'emoji' || sprinkleStyle === 'emoji' );
+								const RULE_EMOJIS = [ '\u2728', '\u2b50', '\U0001f31f', '\u2764\ufe0f', '\U0001f49c', '\U0001f98b', '\U0001f338', '\U0001f48e', '\U0001f340', '\u2744\ufe0f', '\U0001f308', '\U0001f386', '\U0001f389', '\U0001f342', '\U0001f384', '\U0001f423', '\U0001f383' ];
+								const isCustomEmoji = showEmoji && ! RULE_EMOJIS.includes( rule.emoji || '\u2728' );
+								const updateRule = ( changes ) => setAttributes( { seasonalRules: seasonalRules.map( ( r, idx ) => idx === ruleIdx ? { ...r, ...changes } : r ) } );
+								return (
+									<div key={ ruleIdx } style={ { border: '1px solid #ddd', borderRadius: '4px', padding: '10px 12px', marginBottom: '8px' } }>
+										<div style={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' } }>
+											<strong style={ { fontSize: '12px' } }>{ `Rule ${ ruleIdx + 1 }` }</strong>
+											<Button size="small" isDestructive onClick={ () => setAttributes( { seasonalRules: seasonalRules.filter( ( _, idx ) => idx !== ruleIdx ) } ) }>
+												{ __( 'Remove', 'glitter-bomb' ) }
+											</Button>
+										</div>
+										{ isParticleField && (
+											<SelectControl
+												label={ __( 'Style', 'glitter-bomb' ) }
+												value={ rule.style || 'snow' }
+												options={ FIELD_RULE_STYLE_OPTIONS }
+												onChange={ ( val ) => updateRule( { style: val } ) }
+											/>
+										) }
+										{ isSprinkleTrail && sprinkleStyle !== 'emoji' && (
+											<SelectControl
+												label={ __( 'Style', 'glitter-bomb' ) }
+												value={ rule.style || 'particles' }
+												options={ [ { label: __( 'Particles', 'glitter-bomb' ), value: 'particles' }, { label: __( 'Emoji', 'glitter-bomb' ), value: 'emoji' } ] }
+												onChange={ ( val ) => updateRule( { style: val } ) }
+											/>
+										) }
+										{ showEmoji && (
+											<>
+												<SelectControl
+													label={ __( 'Emoji', 'glitter-bomb' ) }
+													value={ isCustomEmoji ? 'custom' : ( rule.emoji || '\u2728' ) }
+													options={ [ ...RULE_EMOJIS.map( ( e ) => ( { label: e, value: e } ) ), { label: __( 'Custom\u2026', 'glitter-bomb' ), value: 'custom' } ] }
+													onChange={ ( val ) => updateRule( { emoji: val === 'custom' ? '' : val } ) }
+												/>
+												{ isCustomEmoji && (
+													<TextControl
+														label={ __( 'Custom Emoji', 'glitter-bomb' ) }
+														value={ rule.emoji || '' }
+														onChange={ ( val ) => updateRule( { emoji: val } ) }
+														help={ __( 'Type or paste any emoji.', 'glitter-bomb' ) }
+													/>
+												) }
+											</>
+										) }
+										<p style={ { fontWeight: 600, margin: '8px 0 4px', fontSize: '12px' } }>{ __( 'Active From', 'glitter-bomb' ) }</p>
+										<div style={ { display: 'flex', gap: '8px' } }>
+											<SelectControl label={ __( 'Month', 'glitter-bomb' ) } value={ rule.startMonth || 1 } options={ MONTH_OPTIONS } onChange={ ( val ) => updateRule( { startMonth: parseInt( val, 10 ) } ) } />
+											<SelectControl label={ __( 'Day', 'glitter-bomb' ) } value={ rule.startDay || 1 } options={ getDayOptions( rule.startMonth || 1 ) } onChange={ ( val ) => updateRule( { startDay: parseInt( val, 10 ) } ) } />
+										</div>
+										<p style={ { fontWeight: 600, margin: '8px 0 4px', fontSize: '12px' } }>{ __( 'Active Until', 'glitter-bomb' ) }</p>
+										<div style={ { display: 'flex', gap: '8px' } }>
+											<SelectControl label={ __( 'Month', 'glitter-bomb' ) } value={ rule.endMonth || 1 } options={ MONTH_OPTIONS } onChange={ ( val ) => updateRule( { endMonth: parseInt( val, 10 ) } ) } />
+											<SelectControl label={ __( 'Day', 'glitter-bomb' ) } value={ rule.endDay || 31 } options={ getDayOptions( rule.endMonth || 1 ) } onChange={ ( val ) => updateRule( { endDay: parseInt( val, 10 ) } ) } />
+										</div>
+										<p style={ { fontSize: '12px', marginTop: '8px', color: isRuleActive ? '#1e8e3e' : '#757575' } }>
+											{ isRuleActive
+												? __( '\U0001f7e2 Active now', 'glitter-bomb' )
+												: `\U0001f535 ${ __( 'Activates', 'glitter-bomb' ) } ${ MONTHS[ ( rule.startMonth || 1 ) - 1 ] } ${ rule.startDay || 1 }`
+											}
+										</p>
+									</div>
+								);
+							} ) }
+							<Button
+								variant="secondary"
+								style={ { width: '100%', justifyContent: 'center', marginTop: '4px' } }
+								onClick={ () => {
+									const defStyle = isParticleField ? 'snow' : ( sprinkleStyle === 'emoji' ? 'emoji' : 'particles' );
+									setAttributes( { seasonalRules: [ ...seasonalRules, { style: defStyle, emoji: '\u2728', startMonth: 1, startDay: 1, endMonth: 1, endDay: 31 } ] } );
+								} }
+							>
+								{ __( '+ Add custom rule', 'glitter-bomb' ) }
+							</Button>
+							<p style={ { color: '#757575', fontSize: '12px', marginTop: '8px' } }>
+								{ __( '\U0001f504 Repeats every year \u2014 first active rule wins.', 'glitter-bomb' ) }
+							</p>
 						</>
 					) }
 				</PanelBody>
