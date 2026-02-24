@@ -361,6 +361,7 @@
 				'warm-sunset': ['#FF6B6B', '#FFA07A', '#FFD700', '#FF8C00', '#FF4500'],
 				'cool-ocean': ['#00CED1', '#20B2AA', '#48D1CC', '#40E0D0', '#00FFFF'],
 			'pride-confetti': ['#FF0024', '#FF8C00', '#FFED00', '#008026', '#004DFF', '#750787'],
+			'love-bomb': ['#FF6B6B', '#FF85A1', '#FFB3BA', '#E8365D', '#FF4F6E', '#FFAEC9'],
 				'custom': [this.config.customColor],
 			};
 
@@ -926,7 +927,7 @@
 			}
 
 			const palette = this.config.experienceMode === 'particle-field'
-				? this.config.fieldColorPalette 
+				? (this.config.fieldParticleStyle === 'love-bomb' ? 'love-bomb' : this.config.fieldColorPalette)
 				: this.config.colorPalette;
 			
 			// Custom color doesn't cycle
@@ -1068,8 +1069,10 @@
 			for (let i = activeParticles.length - 1; i >= 0; i--) {
 				const particle = activeParticles[i];
 				
-				// Update color cycling for non-custom palettes (skip for pride-confetti which uses fixed colors)
-				if (this.config.fieldColorPalette !== 'custom' && this.config.fieldParticleStyle !== 'pride-confetti') {
+				// Update color cycling: always cycle for love-bomb (own palette), skip for pride-confetti (fixed colors), skip for custom palette
+				const shouldCycle = this.config.fieldParticleStyle === 'love-bomb' ||
+					(this.config.fieldColorPalette !== 'custom' && this.config.fieldParticleStyle !== 'pride-confetti');
+				if (shouldCycle) {
 					particle.colorIndex = (particle.colorIndex + particle.colorCycleSpeed) % 1;
 				}
 				
@@ -1206,11 +1209,13 @@
 		drawFieldParticles() {
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
 
-			const isPrideConfetti = this.config.fieldParticleStyle === 'pride-confetti';
+			const style = this.config.fieldParticleStyle;
 			const activeParticles = this.particlePool.getActive();
 			activeParticles.forEach((particle) => {
-				if (isPrideConfetti) {
+				if (style === 'pride-confetti') {
 					this.drawPrideConfetti(particle);
+				} else if (style === 'love-bomb') {
+					this.drawLoveBombHeart(particle);
 				} else {
 					this.ctx.save();
 					this.ctx.translate(particle.x, particle.y);
@@ -1251,6 +1256,29 @@
 					this.ctx.restore();
 				}
 			});
+		}
+
+		// Draw love bomb heart particle — bezier heart path with cycling love palette
+		drawLoveBombHeart(particle) {
+			const s = particle.size;
+			const color = this.getParticleColor(particle);
+
+			this.ctx.save();
+			this.ctx.translate(particle.x, particle.y);
+			this.ctx.rotate(particle.rotation);
+
+			this.ctx.beginPath();
+			// Start at top-center dip, draw right lobe to bottom point, then left lobe back
+			this.ctx.moveTo(0, -s * 0.5);
+			this.ctx.bezierCurveTo(s * 0.5, -s * 1.1, s * 1.2, -s * 0.3, 0, s * 0.7);
+			this.ctx.bezierCurveTo(-s * 1.2, -s * 0.3, -s * 0.5, -s * 1.1, 0, -s * 0.5);
+			this.ctx.closePath();
+
+			this.ctx.globalAlpha = particle.opacity;
+			this.ctx.fillStyle = color;
+			this.ctx.fill();
+			this.ctx.restore();
+			this.ctx.globalAlpha = 1;
 		}
 
 		// Draw pride confetti particle — flat tumbling rectangle in a fixed pride color

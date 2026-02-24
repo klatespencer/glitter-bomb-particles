@@ -362,12 +362,13 @@ export default function Edit( { attributes, setAttributes } ) {
 							options={ [
 								{ label: __( 'Glitter', 'glitter-bomb' ), value: 'glitter' },
 								{ label: __( 'Pride Confetti', 'glitter-bomb' ), value: 'pride-confetti' },
+								{ label: __( 'Love Bomb', 'glitter-bomb' ), value: 'love-bomb' },
 							] }
 							onChange={ ( value ) => setAttributes( { fieldParticleStyle: value } ) }
 							help={ __( 'Choose the particle style for the field effect', 'glitter-bomb' ) }
 						/>
 
-						{ fieldParticleStyle !== 'pride-confetti' && (
+						{ fieldParticleStyle !== 'pride-confetti' && fieldParticleStyle !== 'love-bomb' && (
 							<>
 								<SelectControl
 									label={ __( 'Color Palette', 'glitter-bomb' ) }
