@@ -346,8 +346,9 @@
 				fieldParticleCount: parseInt(blockElement.dataset.fieldParticleCount) || 200,
 				fieldParticleSize: parseFloat(blockElement.dataset.fieldParticleSize) || 6,
 				fieldParticleSizeMobile: parseFloat(blockElement.dataset.fieldParticleSizeMobile) || 3,
-				fieldMouseAttraction: parseFloat(blockElement.dataset.fieldMouseAttraction) || 0.5,
+				fieldMouseAttraction: blockElement.dataset.fieldMouseAttraction !== undefined ? parseFloat(blockElement.dataset.fieldMouseAttraction) : 0.5,
 				fieldSpreadStrength: parseFloat(blockElement.dataset.fieldSpreadStrength) || 0.3,
+				fieldParticleOpacity: blockElement.dataset.fieldParticleOpacity !== undefined ? parseFloat(blockElement.dataset.fieldParticleOpacity) : 1,
 				fieldClickExplosion: blockElement.dataset.fieldClickExplosion === 'true',
 			fieldParticleStyle: blockElement.dataset.fieldParticleStyle || 'glitter',
 			sprinkleStyle: blockElement.dataset.sprinkleStyle || 'particles',
@@ -1559,8 +1560,11 @@
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
 
 			const style = this.config.fieldParticleStyle;
+			const opacityMult = this.config.fieldParticleOpacity !== undefined ? this.config.fieldParticleOpacity : 1;
 			const activeParticles = this.particlePool.getActive();
 			activeParticles.forEach((particle) => {
+				const origOpacity = particle.opacity;
+				particle.opacity = origOpacity * opacityMult;
 				if (style === 'pride-confetti') {
 					this.drawPrideConfetti(particle);
 				} else if (style === 'love-bomb') {
@@ -1571,6 +1575,7 @@
 					this.drawAutumnLeaf(particle);
 				} else {
 					this.ctx.save();
+					this.ctx.globalAlpha = particle.opacity;
 					this.ctx.translate(particle.x, particle.y);
 					this.ctx.rotate(particle.rotation);
 
@@ -1608,6 +1613,7 @@
 					
 					this.ctx.restore();
 				}
+				particle.opacity = origOpacity;
 			});
 		}
 

@@ -130,6 +130,10 @@
       "type": "number",
       "default": 0.5
     },
+    "fieldParticleOpacity": {
+      "type": "number",
+      "default": 1
+    },
     "fieldSpreadStrength": {
       "type": "number",
       "default": 0.3

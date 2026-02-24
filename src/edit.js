@@ -111,6 +111,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		fieldParticleSize,
 		fieldParticleSizeMobile,
 		fieldMouseAttraction,
+		fieldParticleOpacity,
 		fieldSpreadStrength,
 		fieldClickExplosion,
 		fieldParticleStyle,
@@ -462,6 +463,16 @@ export default function Edit( { attributes, setAttributes } ) {
 						) }
 
 						<RangeControl
+							label={ __( 'Particle Opacity', 'glitter-bomb' ) }
+							value={ fieldParticleOpacity }
+							onChange={ ( value ) => setAttributes( { fieldParticleOpacity: value } ) }
+							min={ 0.1 }
+							max={ 1 }
+							step={ 0.05 }
+							help={ __( 'Overall opacity of particles. Reduce for a subtler, more ambient effect.', 'glitter-bomb' ) }
+						/>
+
+						<RangeControl
 							label={ __( 'Particle Count', 'glitter-bomb' ) }
 							value={ fieldParticleCount }
 							onChange={ ( value ) => setAttributes( { fieldParticleCount: value } ) }
@@ -491,15 +502,23 @@ export default function Edit( { attributes, setAttributes } ) {
 							help={ __( 'Set the base size of each glitter particle on mobile devices', 'glitter-bomb' ) }
 						/>
 
-						<RangeControl
+						<ToggleControl
 							label={ __( 'Mouse Attraction', 'glitter-bomb' ) }
-							value={ fieldMouseAttraction }
-							onChange={ ( value ) => setAttributes( { fieldMouseAttraction: value } ) }
-							min={ 0 }
-							max={ 1 }
-							step={ 0.1 }
-							help={ __( 'How strongly particles are attracted to cursor', 'glitter-bomb' ) }
+							help={ __( 'Particles drift toward your cursor. Turn off for a fully ambient field.', 'glitter-bomb' ) }
+							checked={ fieldMouseAttraction > 0 }
+							onChange={ ( value ) => setAttributes( { fieldMouseAttraction: value ? 0.5 : 0 } ) }
 						/>
+						{ fieldMouseAttraction > 0 && (
+							<RangeControl
+								label={ __( 'Attraction Strength', 'glitter-bomb' ) }
+								value={ fieldMouseAttraction }
+								onChange={ ( value ) => setAttributes( { fieldMouseAttraction: value } ) }
+								min={ 0.1 }
+								max={ 1 }
+								step={ 0.1 }
+								help={ __( 'How strongly particles are attracted to cursor', 'glitter-bomb' ) }
+							/>
+						) }
 
 						<RangeControl
 							label={ __( 'Spread Strength', 'glitter-bomb' ) }
@@ -722,7 +741,12 @@ export default function Edit( { attributes, setAttributes } ) {
 										<>
 											<li>
 												{ __( '🎨 Colors: ', 'glitter-bomb' ) }
-												{ fieldColorPalette === 'custom' ? __( 'Custom', 'glitter-bomb' ) : `${fieldColorPalette} (cycling)` }
+												{ fieldParticleStyle === 'pride-confetti' ? __( 'Pride rainbow', 'glitter-bomb' )
+												: fieldParticleStyle === 'love-bomb' ? __( 'Reds & pinks', 'glitter-bomb' )
+												: fieldParticleStyle === 'snow' ? __( 'White & blue', 'glitter-bomb' )
+												: fieldParticleStyle === 'autumn-leaves' ? __( 'Autumn tones', 'glitter-bomb' )
+												: fieldColorPalette === 'custom' ? __( 'Custom', 'glitter-bomb' )
+												: `${fieldColorPalette} (cycling)` }
 											</li>
 											<li>
 												{ __( '🔢 Particle count: ', 'glitter-bomb' ) }

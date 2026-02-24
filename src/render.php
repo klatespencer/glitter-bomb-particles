@@ -234,6 +234,13 @@ $field_spread_strength = glitter_bomb_sanitize_number(
 	0.3
 );
 
+$field_particle_opacity = glitter_bomb_sanitize_number(
+	isset( $attributes['fieldParticleOpacity'] ) ? $attributes['fieldParticleOpacity'] : 1,
+	0.1,
+	1,
+	1
+);
+
 // Validate colors (XSS prevention)
 $custom_color = glitter_bomb_sanitize_color(
 	isset( $attributes['customColor'] ) ? $attributes['customColor'] : '#ff69b4',
@@ -405,6 +412,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 	'data-field-particle-size' => esc_attr( $field_particle_size ),
 	'data-field-particle-size-mobile' => esc_attr( $field_particle_size_mobile ),
 	'data-field-mouse-attraction' => esc_attr( $field_mouse_attraction ),
+	'data-field-particle-opacity' => esc_attr( $field_particle_opacity ),
 	'data-field-spread-strength' => esc_attr( $field_spread_strength ),
 	'data-field-click-explosion' => esc_attr( $field_click_explosion ? 'true' : 'false' ),
 	'data-field-particle-style' => esc_attr( $field_particle_style ),
