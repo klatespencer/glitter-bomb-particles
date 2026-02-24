@@ -291,7 +291,7 @@ $disable_button_text = isset( $attributes['disableButtonText'] )
 
 $field_particle_style = glitter_bomb_sanitize_enum(
 	isset( $attributes['fieldParticleStyle'] ) ? $attributes['fieldParticleStyle'] : 'glitter',
-	array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks' ),
+	array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks', 'autumn-leaves' ),
 	'glitter'
 );
 
@@ -328,7 +328,7 @@ $seasonal_experience_mode = glitter_bomb_sanitize_enum(
 );
 
 $allowed_seasonal_styles = ( $seasonal_experience_mode === 'particle-field' )
-	? array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks' )
+	? array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks', 'autumn-leaves' )
 	: array( 'particles', 'emoji' );
 $seasonal_style_default = ( $seasonal_experience_mode === 'particle-field' ) ? 'snow' : 'particles';
 

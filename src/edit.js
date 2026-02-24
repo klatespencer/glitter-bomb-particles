@@ -53,6 +53,7 @@ const SEASONAL_STYLE_OPTIONS = [
 	{ label: '❤️  Love Bomb (Particle Field)', value: 'particle-field|love-bomb' },
 	{ label: '🌈  Pride Confetti (Particle Field)', value: 'particle-field|pride-confetti' },
 	{ label: '✨  Glitter (Particle Field)', value: 'particle-field|glitter' },
+	{ label: '🍂  Autumn Leaves (Particle Field)', value: 'particle-field|autumn-leaves' },
 	{ label: '✨  Sparkle Trail (Sprinkle)', value: 'sprinkle-trail|particles' },
 	{ label: '🎭  Emoji Trail (Sprinkle)', value: 'sprinkle-trail|emoji' },
 ];
@@ -413,15 +414,17 @@ export default function Edit( { attributes, setAttributes } ) {
 								{ label: __( 'Love Bomb', 'glitter-bomb' ), value: 'love-bomb' },
 							{ label: __( 'Snow', 'glitter-bomb' ), value: 'snow' },
 							{ label: __( 'Fireworks', 'glitter-bomb' ), value: 'fireworks' },
+							{ label: __( 'Autumn Leaves', 'glitter-bomb' ), value: 'autumn-leaves' },
 							] }
 							onChange={ ( value ) => {
 							setAttributes( { fieldParticleStyle: value } );
 							if ( value === 'fireworks' ) { setAttributes( { fieldColorPalette: 'fourth-of-july' } ); }
+							if ( value === 'autumn-leaves' ) { setAttributes( { fieldColorPalette: 'autumn' } ); }
 						} }
 							help={ __( 'Choose the particle style for the field effect', 'glitter-bomb' ) }
 						/>
 
-						{ fieldParticleStyle !== 'pride-confetti' && fieldParticleStyle !== 'love-bomb' && fieldParticleStyle !== 'snow' && (
+						{ fieldParticleStyle !== 'pride-confetti' && fieldParticleStyle !== 'love-bomb' && fieldParticleStyle !== 'snow' && fieldParticleStyle !== 'autumn-leaves' && (
 							<>
 								<SelectControl
 									label={ __( 'Color Palette', 'glitter-bomb' ) }

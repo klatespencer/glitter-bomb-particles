@@ -366,6 +366,7 @@
 			'love-bomb': ['#FF6B6B', '#FF85A1', '#FFB3BA', '#E8365D', '#FF4F6E', '#FFAEC9'],
 			'snow': ['#FFFFFF', '#F0F8FF', '#E8F4F8'],
 			'fourth-of-july': ['#FF2200', '#FFFFFF', '#0033CC', '#FFD700', '#FF6633', '#66AAFF'],
+			'autumn': ['#C44B0C', '#D4522A', '#8B2500', '#DAA520', '#9B1B0A', '#B8500A', '#CC7722'],
 				'custom': [this.config.customColor],
 			};
 
@@ -875,6 +876,25 @@
 				particle.baseOpacity = 0.35 + Math.random() * 0.65;
 				particle.opacity = particle.baseOpacity;
 			}
+
+			// Autumn leaves: fixed color from autumn palette, gravity fall, tumbling rotation
+			if (this.config.fieldParticleStyle === 'autumn-leaves') {
+				const maxSize = isMobile ? this.config.fieldParticleSizeMobile : this.config.fieldParticleSize;
+				particle.baseSize = maxSize * (0.5 + Math.pow(Math.random(), 0.5) * 0.8);
+				particle.size = particle.baseSize;
+				particle.fallSpeed = 0.3 + (particle.baseSize / Math.max(maxSize, 1)) * 1.0;
+				particle.vy = particle.fallSpeed * (0.3 + Math.random() * 0.4);
+				particle.vx = (Math.random() - 0.5) * 0.6;
+				particle.driftPhase = Math.random() * Math.PI * 2;
+				particle.driftSpeed = 0.012 + Math.random() * 0.018;
+				particle.driftAngle = 0.6 + Math.random() * 1.0;
+				particle.rotation = Math.random() * Math.PI * 2;
+				particle.rotationSpeed = (Math.random() - 0.5) * 0.04;
+				particle.baseOpacity = 0.75 + Math.random() * 0.25;
+				particle.opacity = particle.baseOpacity;
+				const autumnPalette = this.colorPalettes['autumn'];
+				particle.leafColor = autumnPalette[Math.floor(Math.random() * autumnPalette.length)];
+			}
 		}
 
 		// Create powerful ripple explosion effect on click
@@ -975,6 +995,12 @@
 					if (self.config.fieldParticleStyle === 'pride-confetti') {
 						const prideColors = self.colorPalettes['pride-confetti'];
 						particle.color = prideColors[Math.floor(Math.random() * prideColors.length)];
+					}
+					if (self.config.fieldParticleStyle === 'autumn-leaves') {
+						const autumnPalette = self.colorPalettes['autumn'];
+						particle.leafColor = autumnPalette[Math.floor(Math.random() * autumnPalette.length)];
+						particle.rotation = Math.random() * Math.PI * 2;
+						particle.rotationSpeed = (Math.random() - 0.5) * 0.06;
 					}
 				}
 			}
@@ -1439,6 +1465,68 @@
 			}
 		}
 
+		updateAutumnParticles() {
+			const attraction = this.config.fieldMouseAttraction;
+			const windRadius = 150;
+			const activeParticles = this.particlePool.getActive();
+			for (let i = activeParticles.length - 1; i >= 0; i--) {
+				const particle = activeParticles[i];
+
+				if (particle.isExplosion) {
+					particle.vy += 0.18;
+					particle.vx *= 0.97;
+					particle.rotation += particle.rotationSpeed * 2;
+					particle.x += particle.vx;
+					particle.y += particle.vy;
+					particle.explosionLife -= 0.018;
+					particle.opacity = Math.max(0, particle.explosionLife * (particle.baseOpacity || 0.8));
+					if (particle.explosionLife <= 0) {
+						this.particlePool.release(particle);
+					}
+					continue;
+				}
+
+				// Gravity: gentle — leaves fall slower than snow
+				if (particle.vy < particle.fallSpeed) {
+					particle.vy += 0.025;
+				}
+
+				// Sinusoidal horizontal drift — leaves sway in the breeze
+				particle.driftPhase += particle.driftSpeed;
+				particle.vx = Math.sin(particle.driftPhase) * particle.driftAngle;
+
+				// Tumbling rotation as the leaf falls
+				particle.rotation += particle.rotationSpeed;
+
+				// Mouse as wind gust: pushes leaves sideways
+				if (attraction > 0 && this.mouseInViewport) {
+					const dx = particle.x - this.mouseX;
+					const dy = particle.y - this.mouseY;
+					const dist = Math.sqrt(dx * dx + dy * dy);
+					if (dist < windRadius && dist > 0) {
+						const force = (1 - dist / windRadius) * attraction * 1.2;
+						particle.vx += (dx / dist) * force * 0.8;
+						particle.vy -= force * 0.1;
+					}
+				}
+
+				particle.x += particle.vx;
+				particle.y += particle.vy;
+
+				// Wrap horizontally
+				if (particle.x < -particle.size * 2) particle.x = this.logicalWidth + particle.size * 2;
+				if (particle.x > this.logicalWidth + particle.size * 2) particle.x = -particle.size * 2;
+
+				// Respawn at top when leaf exits bottom
+				if (particle.y > this.logicalHeight + particle.size * 2) {
+					particle.x = Math.random() * this.logicalWidth;
+					particle.y = -particle.size * 2 - Math.random() * 30;
+					particle.vy = particle.fallSpeed * (0.3 + Math.random() * 0.3);
+					particle.rotation = Math.random() * Math.PI * 2;
+				}
+			}
+		}
+
 		// Draw sprinkle trail particles
 		drawSprinkleParticles() {
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
@@ -1479,6 +1567,8 @@
 					this.drawLoveBombHeart(particle);
 				} else if (style === 'snow') {
 					this.drawSnowParticle(particle);
+				} else if (style === 'autumn-leaves') {
+					this.drawAutumnLeaf(particle);
 				} else {
 					this.ctx.save();
 					this.ctx.translate(particle.x, particle.y);
@@ -1577,6 +1667,42 @@
 			this.ctx.restore();
 		}
 
+		drawAutumnLeaf(particle) {
+			const ctx = this.ctx;
+			ctx.save();
+			ctx.globalAlpha = particle.opacity;
+			ctx.translate(particle.x, particle.y);
+			ctx.rotate(particle.rotation);
+			const s = particle.size;
+
+			// Pointed-oval leaf shape: two bezier curves
+			ctx.beginPath();
+			ctx.moveTo(0, -s * 1.2);
+			ctx.bezierCurveTo(s * 0.75, -s * 0.5, s * 0.75, s * 0.5, 0, s * 1.0);
+			ctx.bezierCurveTo(-s * 0.75, s * 0.5, -s * 0.75, -s * 0.5, 0, -s * 1.2);
+			ctx.fillStyle = particle.leafColor || '#C44B0C';
+			ctx.fill();
+
+			// Midrib vein
+			ctx.beginPath();
+			ctx.moveTo(0, -s * 1.2);
+			ctx.lineTo(0, s * 1.0);
+			ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+			ctx.lineWidth = Math.max(0.5, s * 0.08);
+			ctx.stroke();
+
+			// Short stem
+			ctx.beginPath();
+			ctx.moveTo(0, s * 1.0);
+			ctx.lineTo(0, s * 1.6);
+			ctx.strokeStyle = 'rgba(101, 67, 33, 0.55)';
+			ctx.lineWidth = Math.max(0.5, s * 0.1);
+			ctx.stroke();
+
+			ctx.restore();
+			ctx.globalAlpha = 1;
+		}
+
 		animate() {
 			// Only continue if tab is visible and effects are active
 			if (!this.isTabVisible || !this.isActive) {
@@ -1599,6 +1725,9 @@
 					this.drawSprinkleParticles();
 				} else if (this.config.fieldParticleStyle === 'snow') {
 					this.updateSnowParticles();
+					this.drawFieldParticles();
+				} else if (this.config.fieldParticleStyle === 'autumn-leaves') {
+					this.updateAutumnParticles();
 					this.drawFieldParticles();
 				} else if (this.config.fieldParticleStyle === 'fireworks') {
 					this.updateFireworksParticles();
