@@ -1,7 +1,7 @@
 === Glitter Bomb ===
 
 Contributors:      klate
-Tags:              particles, animation, interactive, cursor, effects
+Tags:              particles, animation, interactive, cursor, sparkles, confetti, seasonal
 Tested up to:      6.9
 Stable tag:        1.0.1
 License:           GPLv2 or later
@@ -9,30 +9,36 @@ License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 6.1
 Requires PHP:      7.4
 
-Maximalist particle effects for WordPress — touch-responsive sparkle trails and glitter fields. WCAG 2.2 AA compliant.
+Cursor sparkle trails, confetti fields, and particle animations for WordPress. Touch-friendly, WCAG 2.2 AA compliant, and questionable UX done well.
 
 == Description ==
 
-Haven't you ever wondered what the world would be like if GeoCities worked on your phone? Glitter Bomb brings interactive cursor effects and confetti-style particle fields to WordPress — with touch support that actually works. See it in action at [klatespencer.com/glitter-bomb](https://klatespencer.com/glitter-bomb/).
+Glitter Bomb is a [Gutenberg block](https://developer.wordpress.org/block-editor/getting-started/faq/#what-is-gutenberg) — add it to any post or page from the WordPress block editor and configure in the sidebar.
+
+Haven't you ever wondered what the world would be like if GeoCities worked on your phone? Glitter Bomb brings cursor effects, confetti, and particle animations to WordPress — with touch support that actually works. See it in action at [klatespencer.com/glitter-bomb](https://klatespencer.com/glitter-bomb/).
 
 **[✨ Sprinkle Trail Mode](https://klatespencer.com/rainbow-sprinkle/)**
-Particles follow your cursor on desktop and your finger on mobile with smooth gesture tracking. Choose between compact trails or scattered drifting patterns.
+Particles follow your cursor on desktop and your finger on mobile. Choose compact or scattered trails, or switch to Emoji Trail mode and drop any character as you move — ❄️ in December, ❤️ in February, whatever fits.
 
 **[💫 Particle Field Mode](https://klatespencer.com/particle-field/)**
-Your entire page becomes a canvas of shimmering glitter. Particles drift, attract to your cursor or touch, and explode into sparkles on click or tap.
+Your entire page becomes a canvas of shimmering particles that drift, attract to your cursor, and explode into sparkles on click or tap. Six styles to choose from.
 
-**Honest assessment:** No site *needs* this. It adds JavaScript, it competes with your content, and enabling it by default on a checkout page would be irresponsible. On a hero section, birthday page, portfolio, or anywhere a little extra is exactly right? Absolutely your call.
+**Get your glitter on!** No site *needs* this. It adds JavaScript, it competes with your content, and enabling it by default on a checkout page would be irresponsible. On a hero section, birthday page, portfolio, or anywhere a little extra is exactly right? Absolutely your call.
 
 **Features:**
 
-* Touch-optimized from the start — particle trails follow your finger, tap triggers explosions, separate sizing controls for mobile vs. desktop, and an option to disable on mobile entirely
+* **Six Particle Field styles** — Glitter, Pride Confetti, Love Bomb, Snow, Fireworks, and Autumn Leaves, each with its own physics
+* **Emoji Trail mode** — drop any emoji instead of particles: pick from presets or type your own
+* **Seasonal Override** — schedule different particle styles for specific date ranges each year; stack multiple rules, first active rule wins
+* **Six color palettes** for Sprinkle Trail (Rainbow, Metallic, Neutral Spectrum, Warm Sunset, Cool Ocean, Custom) plus independent palette control for Particle Field
+* **Granular controls** — opacity, particle size, count, animation duration, mouse attraction (with on/off toggle), spread strength, and separate sizing for mobile vs. desktop
+* **Customizable toggle button** — position, text, and gradient colors
+* Touch-optimized — trails follow your finger, tap triggers explosions, disable on mobile if needed
 * WCAG 2.2 AA compliant — keyboard navigation, screen reader support, `prefers-reduced-motion` respect
-* Six color palettes (Rainbow, Metallic, Neutral Spectrum, Warm Sunset, Cool Ocean, Custom)
-* Customizable toggle button: position, text, and gradient colors
 * No external dependencies, no tracking, no data collection
-* Performance optimizations: object pooling, particle culling, canvas scaling, RAF animation
+* Performance optimizations: object pooling, particle culling, canvas scaling, RAF animation loop
 
-Built with [Telex](https://telex.im) and [Claude Code](https://claude.ai/code). More details at [klatespencer.com/glitter-bomb](https://klatespencer.com/glitter-bomb/).
+Built with [Telex](https://telex.im) and [Claude Code](https://claude.ai/code). More at [klatespencer.com/glitter-bomb](https://klatespencer.com/glitter-bomb/).
 
 == Installation ==
 
@@ -57,9 +63,9 @@ Yes. Particle trails follow your finger with smooth gesture tracking, tap trigge
 
 Yes. WCAG 2.2 AA compliant: keyboard navigation, screen reader announcements via ARIA live regions, visible focus indicators, and automatic respect for `prefers-reduced-motion` per [WCAG 2.1 Success Criterion 2.3.3](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html).
 
-= What's the difference between the two modes? =
+= What is the Seasonal Override? =
 
-**Sprinkle Trail** creates particles that follow cursor or touch movement in compact or scattered patterns. **Particle Field** fills the entire viewport with physics-based glitter that drifts, attracts to your cursor, and explodes on click.
+It lets you schedule different particle styles for specific dates each year — useful for holidays, events, or seasonal themes. Add as many rules as you like; each has a start date, end date, and style. The first active rule wins, so order matters. Rules are mode-locked: Particle Field rules pick from field styles, Sprinkle Trail rules pick trail styles or switch to a specific emoji. Everything repeats automatically every year.
 
 = Will this slow down my site? =
 
