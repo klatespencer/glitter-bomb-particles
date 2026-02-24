@@ -87,6 +87,17 @@
 	border-width: 0;
 }
 
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	.glitter-bomb-toggle {
+		box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+
+		&:hover {
+			box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+		}
+	}
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
 	.glitter-bomb-toggle {
