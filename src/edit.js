@@ -24,6 +24,47 @@ import { chevronDown, chevronUp } from '@wordpress/icons';
  */
 import './editor.scss';
 
+// Seasonal override helpers
+const MONTHS = [
+	'January', 'February', 'March', 'April', 'May', 'June',
+	'July', 'August', 'September', 'October', 'November', 'December',
+];
+const MONTH_OPTIONS = MONTHS.map( ( name, i ) => ( { label: name, value: i + 1 } ) );
+
+function getDayOptions( month ) {
+	const days = [ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+	return Array.from( { length: days[ month - 1 ] || 31 }, ( _, i ) => ( { label: String( i + 1 ), value: i + 1 } ) );
+}
+
+function checkSeasonalActive( startMonth, startDay, endMonth, endDay ) {
+	const now = new Date();
+	const cur = ( now.getMonth() + 1 ) * 100 + now.getDate();
+	const start = startMonth * 100 + startDay;
+	const end = endMonth * 100 + endDay;
+	if ( start <= end ) {
+		return cur >= start && cur <= end;
+	}
+	return cur >= start || cur <= end;
+}
+
+const SEASONAL_STYLE_OPTIONS = [
+	{ label: '❄️  Snow (Particle Field)', value: 'particle-field|snow' },
+	{ label: '🎆  Fireworks (Particle Field)', value: 'particle-field|fireworks' },
+	{ label: '❤️  Love Bomb (Particle Field)', value: 'particle-field|love-bomb' },
+	{ label: '🌈  Pride Confetti (Particle Field)', value: 'particle-field|pride-confetti' },
+	{ label: '✨  Glitter (Particle Field)', value: 'particle-field|glitter' },
+	{ label: '✨  Sparkle Trail (Sprinkle)', value: 'sprinkle-trail|particles' },
+	{ label: '🎭  Emoji Trail (Sprinkle)', value: 'sprinkle-trail|emoji' },
+];
+
+const SEASONAL_PRESETS = {
+	winter:     { seasonalStyle: 'particle-field|snow',           seasonalStartMonth: 12, seasonalStartDay: 1,  seasonalEndMonth: 1, seasonalEndDay: 5  },
+	valentines: { seasonalStyle: 'particle-field|love-bomb',      seasonalStartMonth: 2,  seasonalStartDay: 1,  seasonalEndMonth: 2, seasonalEndDay: 14 },
+	pride:      { seasonalStyle: 'particle-field|pride-confetti', seasonalStartMonth: 6,  seasonalStartDay: 1,  seasonalEndMonth: 6, seasonalEndDay: 30 },
+	july4:      { seasonalStyle: 'particle-field|fireworks',      seasonalStartMonth: 7,  seasonalStartDay: 1,  seasonalEndMonth: 7, seasonalEndDay: 7  },
+	newyears:   { seasonalStyle: 'particle-field|fireworks',      seasonalStartMonth: 12, seasonalStartDay: 31, seasonalEndMonth: 1, seasonalEndDay: 1  },
+};
+
 /**
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
@@ -66,6 +107,12 @@ export default function Edit( { attributes, setAttributes } ) {
 		sprinkleStyle,
 		sprinkleEmoji,
 		disableOnMobile,
+		seasonalEnabled,
+		seasonalStyle,
+		seasonalStartMonth,
+		seasonalStartDay,
+		seasonalEndMonth,
+		seasonalEndDay,
 	} = attributes;
 
 	const isSprinkleTrail = experienceMode === 'sprinkle-trail';
@@ -464,6 +511,89 @@ export default function Edit( { attributes, setAttributes } ) {
 						/>
 					</PanelBody>
 				) }
+
+				<PanelBody title={ __( 'Seasonal Override', 'glitter-bomb' ) } initialOpen={ false }>
+					<ToggleControl
+						label={ __( 'Enable seasonal style', 'glitter-bomb' ) }
+						help={ seasonalEnabled
+							? __( 'A different style shows during your active dates. Outside those dates, your default style shows.', 'glitter-bomb' )
+							: __( 'Your default style shows year-round. Enable to automatically swap to a different style on specific dates each year.', 'glitter-bomb' )
+						}
+						checked={ seasonalEnabled }
+						onChange={ ( value ) => setAttributes( { seasonalEnabled: value } ) }
+					/>
+					{ seasonalEnabled && (
+						<>
+							<SelectControl
+								label={ __( 'Quick Preset', 'glitter-bomb' ) }
+								value=""
+								options={ [
+									{ label: __( '— Choose a preset —', 'glitter-bomb' ), value: '' },
+									{ label: '❄️  Winter (Dec 1 – Jan 5)', value: 'winter' },
+									{ label: "❤️  Valentine's Day (Feb 1–14)", value: 'valentines' },
+									{ label: '🌈  Pride Month (Jun 1–30)', value: 'pride' },
+									{ label: '🎆  Fourth of July (Jul 1–7)', value: 'july4' },
+									{ label: "🎉  New Year's (Dec 31 – Jan 1)", value: 'newyears' },
+								] }
+								onChange={ ( value ) => {
+									if ( value && SEASONAL_PRESETS[ value ] ) {
+										setAttributes( SEASONAL_PRESETS[ value ] );
+									}
+								} }
+								help={ __( 'One-click setup for common seasonal events. Fine-tune the dates below.', 'glitter-bomb' ) }
+							/>
+							<SelectControl
+								label={ __( 'Seasonal Style', 'glitter-bomb' ) }
+								value={ seasonalStyle }
+								options={ SEASONAL_STYLE_OPTIONS }
+								onChange={ ( value ) => setAttributes( { seasonalStyle: value } ) }
+								help={ __( 'The effect that shows during the active date range.', 'glitter-bomb' ) }
+							/>
+							<p style={ { fontWeight: 600, marginBottom: '4px' } }>{ __( 'Active From', 'glitter-bomb' ) }</p>
+							<div style={ { display: 'flex', gap: '8px' } }>
+								<SelectControl
+									label={ __( 'Month', 'glitter-bomb' ) }
+									value={ seasonalStartMonth }
+									options={ MONTH_OPTIONS }
+									onChange={ ( value ) => setAttributes( { seasonalStartMonth: parseInt( value, 10 ) } ) }
+								/>
+								<SelectControl
+									label={ __( 'Day', 'glitter-bomb' ) }
+									value={ seasonalStartDay }
+									options={ getDayOptions( seasonalStartMonth ) }
+									onChange={ ( value ) => setAttributes( { seasonalStartDay: parseInt( value, 10 ) } ) }
+								/>
+							</div>
+							<p style={ { fontWeight: 600, margin: '12px 0 4px' } }>{ __( 'Active Until', 'glitter-bomb' ) }</p>
+							<div style={ { display: 'flex', gap: '8px' } }>
+								<SelectControl
+									label={ __( 'Month', 'glitter-bomb' ) }
+									value={ seasonalEndMonth }
+									options={ MONTH_OPTIONS }
+									onChange={ ( value ) => setAttributes( { seasonalEndMonth: parseInt( value, 10 ) } ) }
+								/>
+								<SelectControl
+									label={ __( 'Day', 'glitter-bomb' ) }
+									value={ seasonalEndDay }
+									options={ getDayOptions( seasonalEndMonth ) }
+									onChange={ ( value ) => setAttributes( { seasonalEndDay: parseInt( value, 10 ) } ) }
+								/>
+							</div>
+							<p style={ { color: '#757575', fontSize: '12px', marginTop: '6px' } }>
+								{ __( '🔄 Repeats every year — no updates needed.', 'glitter-bomb' ) }
+							</p>
+							{ checkSeasonalActive( seasonalStartMonth, seasonalStartDay, seasonalEndMonth, seasonalEndDay ) ? (
+								<Notice status="success" isDismissible={ false }>
+									{ __( '🟢 Currently active — visitors see the seasonal style right now.', 'glitter-bomb' ) }
+								</Notice>
+							) : (
+								<Notice status="info" isDismissible={ false }>
+									{ `🔵 ${ __( 'Not currently active. Will activate:', 'glitter-bomb' ) } ${ MONTHS[ seasonalStartMonth - 1 ] } ${ seasonalStartDay }` }
+								</Notice>
+							) }
+						</>
+					) }
+				</PanelBody>
 
 				<PanelBody title={ __( 'Accessibility', 'glitter-bomb' ) } initialOpen={ false }>
 					<Notice status="info" isDismissible={ false }>

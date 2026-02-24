@@ -95,6 +95,32 @@ if ( ! function_exists( 'glitter_bomb_sanitize_number' ) ) {
 	}
 }
 
+/**
+ * Check if the current date falls within an annual date range
+ *
+ * Handles year-boundary wrap (e.g. Dec 15 – Jan 5) by detecting when
+ * start > end and flipping the comparison.
+ *
+ * @param int $start_month Start month (1–12)
+ * @param int $start_day   Start day (1–31)
+ * @param int $end_month   End month (1–12)
+ * @param int $end_day     End day (1–31)
+ * @return bool True if today falls within the range
+ */
+if ( ! function_exists( 'glitter_bomb_is_seasonal_active' ) ) {
+	function glitter_bomb_is_seasonal_active( $start_month, $start_day, $end_month, $end_day ) {
+		$now   = current_time( 'timestamp' );
+		$cur   = (int) date( 'n', $now ) * 100 + (int) date( 'j', $now );
+		$start = $start_month * 100 + $start_day;
+		$end   = $end_month   * 100 + $end_day;
+		if ( $start <= $end ) {
+			return $cur >= $start && $cur <= $end;
+		}
+		// Handles year-boundary wrap (e.g. Dec 15 – Jan 5)
+		return $cur >= $start || $cur <= $end;
+	}
+}
+
 // =======================
 // INPUT VALIDATION
 // =======================
@@ -285,6 +311,59 @@ if ( empty( $sprinkle_emoji ) ) {
 $enabled_by_default = isset( $attributes['enabledByDefault'] ) && $attributes['enabledByDefault'] === true;
 $field_click_explosion = isset( $attributes['fieldClickExplosion'] ) && $attributes['fieldClickExplosion'] === true;
 $disable_on_mobile = isset( $attributes['disableOnMobile'] ) && $attributes['disableOnMobile'] === true;
+
+// Seasonal override attributes
+$seasonal_enabled = isset( $attributes['seasonalEnabled'] ) && $attributes['seasonalEnabled'] === true;
+
+// Parse combined 'experienceMode|style' value (e.g. 'particle-field|snow')
+$seasonal_style_raw      = isset( $attributes['seasonalStyle'] ) ? (string) $attributes['seasonalStyle'] : 'particle-field|snow';
+$seasonal_style_parts    = explode( '|', $seasonal_style_raw, 2 );
+$seasonal_mode_raw       = isset( $seasonal_style_parts[0] ) ? $seasonal_style_parts[0] : 'particle-field';
+$seasonal_style_name_raw = isset( $seasonal_style_parts[1] ) ? $seasonal_style_parts[1] : 'snow';
+
+$seasonal_experience_mode = glitter_bomb_sanitize_enum(
+	$seasonal_mode_raw,
+	array( 'sprinkle-trail', 'particle-field' ),
+	'particle-field'
+);
+
+$allowed_seasonal_styles = ( $seasonal_experience_mode === 'particle-field' )
+	? array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks' )
+	: array( 'particles', 'emoji' );
+$seasonal_style_default = ( $seasonal_experience_mode === 'particle-field' ) ? 'snow' : 'particles';
+
+$seasonal_style_name = glitter_bomb_sanitize_enum(
+	$seasonal_style_name_raw,
+	$allowed_seasonal_styles,
+	$seasonal_style_default
+);
+
+$seasonal_start_month = (int) glitter_bomb_sanitize_number(
+	isset( $attributes['seasonalStartMonth'] ) ? $attributes['seasonalStartMonth'] : 12,
+	1, 12, 12
+);
+$seasonal_start_day = (int) glitter_bomb_sanitize_number(
+	isset( $attributes['seasonalStartDay'] ) ? $attributes['seasonalStartDay'] : 1,
+	1, 31, 1
+);
+$seasonal_end_month = (int) glitter_bomb_sanitize_number(
+	isset( $attributes['seasonalEndMonth'] ) ? $attributes['seasonalEndMonth'] : 1,
+	1, 12, 1
+);
+$seasonal_end_day = (int) glitter_bomb_sanitize_number(
+	isset( $attributes['seasonalEndDay'] ) ? $attributes['seasonalEndDay'] : 5,
+	1, 31, 5
+);
+
+// Apply seasonal override when enabled and within the configured date range
+if ( $seasonal_enabled && glitter_bomb_is_seasonal_active( $seasonal_start_month, $seasonal_start_day, $seasonal_end_month, $seasonal_end_day ) ) {
+	$experience_mode = $seasonal_experience_mode;
+	if ( $seasonal_experience_mode === 'particle-field' ) {
+		$field_particle_style = $seasonal_style_name;
+	} else {
+		$sprinkle_style = $seasonal_style_name;
+	}
+}
 
 // =======================
 // OUTPUT ESCAPING

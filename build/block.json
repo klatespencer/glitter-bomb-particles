@@ -145,6 +145,30 @@
     "disableOnMobile": {
       "type": "boolean",
       "default": false
+    },
+    "seasonalEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "seasonalStyle": {
+      "type": "string",
+      "default": "particle-field|snow"
+    },
+    "seasonalStartMonth": {
+      "type": "number",
+      "default": 12
+    },
+    "seasonalStartDay": {
+      "type": "number",
+      "default": 1
+    },
+    "seasonalEndMonth": {
+      "type": "number",
+      "default": 1
+    },
+    "seasonalEndDay": {
+      "type": "number",
+      "default": 5
     }
   },
   "supports": {
