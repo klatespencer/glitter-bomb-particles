@@ -244,6 +244,7 @@ export default function Edit( { attributes, setAttributes } ) {
 										{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
 										{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
 										{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
+										{ label: __( 'Fourth of July', 'glitter-bomb' ), value: 'fourth-of-july' },
 										{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
 									] }
 									onChange={ ( value ) => setAttributes( { colorPalette: value } ) }
@@ -364,8 +365,12 @@ export default function Edit( { attributes, setAttributes } ) {
 								{ label: __( 'Pride Confetti', 'glitter-bomb' ), value: 'pride-confetti' },
 								{ label: __( 'Love Bomb', 'glitter-bomb' ), value: 'love-bomb' },
 							{ label: __( 'Snow', 'glitter-bomb' ), value: 'snow' },
+							{ label: __( 'Fireworks', 'glitter-bomb' ), value: 'fireworks' },
 							] }
-							onChange={ ( value ) => setAttributes( { fieldParticleStyle: value } ) }
+							onChange={ ( value ) => {
+							setAttributes( { fieldParticleStyle: value } );
+							if ( value === 'fireworks' ) { setAttributes( { fieldColorPalette: 'fourth-of-july' } ); }
+						} }
 							help={ __( 'Choose the particle style for the field effect', 'glitter-bomb' ) }
 						/>
 

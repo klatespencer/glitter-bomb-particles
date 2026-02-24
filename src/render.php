@@ -118,7 +118,7 @@ $color_palette = glitter_bomb_sanitize_enum(
 
 $field_color_palette = glitter_bomb_sanitize_enum(
 	isset( $attributes['fieldColorPalette'] ) ? $attributes['fieldColorPalette'] : 'metallic',
-	array( 'rainbow-cycling', 'metallic', 'neutral-spectrum', 'warm-sunset', 'cool-ocean', 'custom' ),
+	array( 'rainbow-cycling', 'metallic', 'neutral-spectrum', 'warm-sunset', 'cool-ocean', 'fourth-of-july', 'custom' ),
 	'metallic'
 );
 
@@ -265,7 +265,7 @@ $disable_button_text = isset( $attributes['disableButtonText'] )
 
 $field_particle_style = glitter_bomb_sanitize_enum(
 	isset( $attributes['fieldParticleStyle'] ) ? $attributes['fieldParticleStyle'] : 'glitter',
-	array( 'glitter', 'pride-confetti', 'love-bomb', 'snow' ),
+	array( 'glitter', 'pride-confetti', 'love-bomb', 'snow', 'fireworks' ),
 	'glitter'
 );
 

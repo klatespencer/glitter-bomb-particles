@@ -300,6 +300,8 @@
 			this.lastParticleX = 0;
 			this.lastParticleY = 0;
 			this.isInitialized = false;
+			this.rockets = [];
+			this.rocketLaunchTimer = 0;
 			
 			// Simplified touch optimization
 			this.lastTouchTime = 0;
@@ -363,6 +365,7 @@
 			'pride-confetti': ['#FF0024', '#FF8C00', '#FFED00', '#008026', '#004DFF', '#750787'],
 			'love-bomb': ['#FF6B6B', '#FF85A1', '#FFB3BA', '#E8365D', '#FF4F6E', '#FFAEC9'],
 			'snow': ['#FFFFFF', '#F0F8FF', '#E8F4F8'],
+			'fourth-of-july': ['#FF2200', '#FFFFFF', '#0033CC', '#FFD700', '#FF6633', '#66AAFF'],
 				'custom': [this.config.customColor],
 			};
 
@@ -797,17 +800,22 @@
 			}
 			// Return all particles to pool
 			this.particlePool.releaseAll();
+			this.rockets = [];
 			this.isInitialized = false;
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
 		}
 
 		// Initialize particle field with hundreds of particles
 		initializeParticleField() {
-			// Return all particles to pool first
 			this.particlePool.releaseAll();
-			
+
+			if (this.config.fieldParticleStyle === 'fireworks') {
+				this.rockets = [];
+				this.rocketLaunchTimer = 0;
+				return;
+			}
+
 			const count = this.config.fieldParticleCount;
-			
 			for (let i = 0; i < count; i++) {
 				this.createFieldParticle();
 			}
@@ -871,6 +879,20 @@
 
 		// Create powerful ripple explosion effect on click
 		createExplosion(x, y) {
+			// Fireworks: instant detonation at click point — skip regular explosion
+			if (this.config.fieldParticleStyle === 'fireworks') {
+				const paletteName = this.config.fieldColorPalette;
+				const palette = this.colorPalettes[paletteName] || this.colorPalettes['fourth-of-july'];
+				const clickRocket = {
+					x: x,
+					y: y,
+					color: palette[Math.floor(Math.random() * palette.length)],
+				};
+				clickRocket.colorRgb = this.hexToRgb(clickRocket.color);
+				const sparkleCount = Math.min(Math.floor(this.config.fieldParticleCount / 4), 60);
+				this.explodeRocket(clickRocket, sparkleCount * 2);
+				return;
+			}
 			const explosionRadius = 250;
 			const explosionForce = 8;
 			const isSnow = this.config.fieldParticleStyle === 'snow';
@@ -1215,6 +1237,143 @@
 			}
 		}
 
+		// Update fireworks — manages rocket launching, ascent, explosion, and falling sparkles
+		updateFireworksParticles() {
+			const paletteName = this.config.fieldColorPalette;
+			const palette = this.colorPalettes[paletteName] || this.colorPalettes['fourth-of-july'];
+			// Launch rate: fieldMouseAttraction 0→1 maps to ~3s→0.4s interval
+			const launchInterval = Math.max(25, Math.round(180 - this.config.fieldMouseAttraction * 155));
+			const sparklesPerBurst = Math.min(Math.floor(this.config.fieldParticleCount / 4), 60);
+
+			// Auto-launch rockets on timer
+			this.rocketLaunchTimer++;
+			if (this.rocketLaunchTimer >= launchInterval && this.rockets.length < 8) {
+				this.launchRocket(palette);
+				if (Math.random() < 0.25) { this.launchRocket(palette); } // occasional double
+				this.rocketLaunchTimer = 0;
+			}
+
+			// Update rockets — move upward, detect peak, explode
+			for (let i = this.rockets.length - 1; i >= 0; i--) {
+				const rocket = this.rockets[i];
+				rocket.vy += 0.09; // gravity decelerates the ascent
+				rocket.x += rocket.vx;
+				rocket.y += rocket.vy;
+				// Explode at peak (velocity crosses zero) or if off-screen
+				if (rocket.vy >= -0.3) {
+					this.explodeRocket(rocket, sparklesPerBurst);
+					this.rockets.splice(i, 1);
+				} else if (rocket.y < -100) {
+					this.rockets.splice(i, 1);
+				}
+			}
+
+			// Update falling sparkles
+			const activeParticles = this.particlePool.getActive();
+			for (let i = activeParticles.length - 1; i >= 0; i--) {
+				const particle = activeParticles[i];
+				particle.vy += 0.1;
+				particle.vx *= 0.99;
+				particle.x += particle.vx;
+				particle.y += particle.vy;
+				particle.explosionLife -= 0.014;
+				particle.opacity = Math.max(0, particle.explosionLife);
+				particle.size = particle.baseSize * Math.max(0, particle.explosionLife);
+				if (particle.explosionLife <= 0 || particle.y > this.logicalHeight + 50) {
+					this.particlePool.release(particle);
+				}
+			}
+		}
+
+		// Launch a single rocket from a scattered position in the lower screen
+		launchRocket(palette) {
+			const color = palette[Math.floor(Math.random() * palette.length)];
+			const speed = 9 + Math.random() * 6;
+			this.rockets.push({
+				x: Math.random() * this.logicalWidth,
+				y: this.logicalHeight * (0.45 + Math.random() * 0.45),
+				vx: (Math.random() - 0.5) * 1.5,
+				vy: -speed,
+				color: color,
+				colorRgb: this.hexToRgb(color),
+			});
+		}
+
+		// Spawn sparkle particles at explosion point
+		explodeRocket(rocket, sparkleCount) {
+			const baseSize = isMobile ? this.config.fieldParticleSizeMobile : this.config.fieldParticleSize;
+			const rgb = rocket.colorRgb;
+			for (let i = 0; i < sparkleCount; i++) {
+				const angle = (Math.PI * 2 * i / sparkleCount) + (Math.random() - 0.5) * 0.4;
+				const speed = 1.5 + Math.random() * 4.5;
+				const particle = this.particlePool.acquire();
+				particle.x = rocket.x;
+				particle.y = rocket.y;
+				particle.homeX = rocket.x;
+				particle.homeY = rocket.y;
+				particle.vx = Math.cos(angle) * speed;
+				particle.vy = Math.sin(angle) * speed - 0.8;
+				particle.baseSize = baseSize * (0.3 + Math.random() * 0.5);
+				particle.size = particle.baseSize;
+				particle.color = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+				particle.opacity = 1;
+				particle.isExplosion = true;
+				particle.explosionLife = 0.6 + Math.random() * 0.6;
+				particle.colorIndex = 0;
+				particle.colorCycleSpeed = 0;
+				particle.rotation = 0;
+				particle.rotationSpeed = 0;
+				particle.driftAngle = 0;
+				particle.driftSpeed = 0;
+				particle.driftPhase = 0;
+			}
+		}
+
+		// Draw rockets (glowing trail + bright head) and falling sparkles
+		drawFireworksParticles() {
+			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
+
+			// Rockets
+			this.rockets.forEach((rocket) => {
+				const rgb = rocket.colorRgb;
+				const trailX = rocket.x - rocket.vx * 18;
+				const trailY = rocket.y - rocket.vy * 18;
+				const grad = this.ctx.createLinearGradient(rocket.x, rocket.y, trailX, trailY);
+				grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.9)`);
+				grad.addColorStop(0.5, 'rgba(255, 220, 120, 0.5)');
+				grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+				this.ctx.beginPath();
+				this.ctx.moveTo(rocket.x, rocket.y);
+				this.ctx.lineTo(trailX, trailY);
+				this.ctx.strokeStyle = grad;
+				this.ctx.lineWidth = 2;
+				this.ctx.stroke();
+				// Bright white head
+				this.ctx.beginPath();
+				this.ctx.arc(rocket.x, rocket.y, 2.5, 0, Math.PI * 2);
+				this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+				this.ctx.fill();
+			});
+
+			// Sparkles with glow
+			const activeParticles = this.particlePool.getActive();
+			activeParticles.forEach((particle) => {
+				if (particle.opacity <= 0 || particle.size <= 0) return;
+				const color = particle.color.replace(/[\d.]+\)$/, particle.opacity + ')');
+				const glow = particle.color.replace(/[\d.]+\)$/, (particle.opacity * 0.25) + ')');
+				// Outer glow
+				this.ctx.beginPath();
+				this.ctx.arc(particle.x, particle.y, particle.size * 2.5, 0, Math.PI * 2);
+				this.ctx.fillStyle = glow;
+				this.ctx.fill();
+				// Bright core
+				this.ctx.beginPath();
+				this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+				this.ctx.fillStyle = color;
+				this.ctx.fill();
+			});
+		}
+
 		// Update snow field particles with gravity and drift physics
 		updateSnowParticles() {
 			const attraction = this.config.fieldMouseAttraction;
@@ -1441,6 +1600,9 @@
 				} else if (this.config.fieldParticleStyle === 'snow') {
 					this.updateSnowParticles();
 					this.drawFieldParticles();
+				} else if (this.config.fieldParticleStyle === 'fireworks') {
+					this.updateFireworksParticles();
+					this.drawFireworksParticles();
 				} else {
 					this.updateFieldParticles();
 					this.drawFieldParticles();
@@ -1453,6 +1615,8 @@
 				// This keeps the rendering smooth even when physics is capped at 60 FPS
 				if (this.config.experienceMode === 'sprinkle-trail') {
 					this.drawSprinkleParticles();
+				} else if (this.config.fieldParticleStyle === 'fireworks') {
+					this.drawFireworksParticles();
 				} else {
 					this.drawFieldParticles();
 				}
