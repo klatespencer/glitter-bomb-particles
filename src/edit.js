@@ -62,6 +62,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		fieldMouseAttraction,
 		fieldSpreadStrength,
 		fieldClickExplosion,
+		fieldParticleStyle,
 		disableOnMobile,
 	} = attributes;
 
@@ -298,31 +299,46 @@ export default function Edit( { attributes, setAttributes } ) {
 				{ isParticleField && (
 					<PanelBody title={ __( 'Particle Field Settings', 'glitter-bomb' ) } initialOpen={ true }>
 						<SelectControl
-							label={ __( 'Color Palette', 'glitter-bomb' ) }
-							value={ fieldColorPalette }
+							label={ __( 'Particle Style', 'glitter-bomb' ) }
+							value={ fieldParticleStyle }
 							options={ [
-								{ label: __( 'Metallic (cycling)', 'glitter-bomb' ), value: 'metallic' },
-								{ label: __( 'Rainbow (cycling)', 'glitter-bomb' ), value: 'rainbow-cycling' },
-								{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
-								{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
-								{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
-								{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
+								{ label: __( 'Glitter', 'glitter-bomb' ), value: 'glitter' },
+								{ label: __( 'Pride Confetti', 'glitter-bomb' ), value: 'pride-confetti' },
 							] }
-							onChange={ ( value ) => setAttributes( { fieldColorPalette: value } ) }
-							help={ __( 'Choose a color palette for the glitter particles', 'glitter-bomb' ) }
+							onChange={ ( value ) => setAttributes( { fieldParticleStyle: value } ) }
+							help={ __( 'Choose the particle style for the field effect', 'glitter-bomb' ) }
 						/>
 
-						{ fieldColorPalette === 'custom' && (
-							<PanelColorSettings
-								title={ __( 'Custom Particle Color', 'glitter-bomb' ) }
-								colorSettings={ [
-									{
-										value: customColor,
-										onChange: ( value ) => setAttributes( { customColor: value } ),
-										label: __( 'Particle Color', 'glitter-bomb' ),
-									},
-								] }
-							/>
+						{ fieldParticleStyle !== 'pride-confetti' && (
+							<>
+								<SelectControl
+									label={ __( 'Color Palette', 'glitter-bomb' ) }
+									value={ fieldColorPalette }
+									options={ [
+										{ label: __( 'Metallic (cycling)', 'glitter-bomb' ), value: 'metallic' },
+										{ label: __( 'Rainbow (cycling)', 'glitter-bomb' ), value: 'rainbow-cycling' },
+										{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
+										{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
+										{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
+										{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
+									] }
+									onChange={ ( value ) => setAttributes( { fieldColorPalette: value } ) }
+									help={ __( 'Choose a color palette for the glitter particles', 'glitter-bomb' ) }
+								/>
+
+								{ fieldColorPalette === 'custom' && (
+									<PanelColorSettings
+										title={ __( 'Custom Particle Color', 'glitter-bomb' ) }
+										colorSettings={ [
+											{
+												value: customColor,
+												onChange: ( value ) => setAttributes( { customColor: value } ),
+												label: __( 'Particle Color', 'glitter-bomb' ),
+											},
+										] }
+									/>
+								) }
+							</>
 						) }
 
 						<RangeControl

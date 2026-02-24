@@ -263,6 +263,12 @@ $disable_button_text = isset( $attributes['disableButtonText'] )
 	? esc_html( substr( trim( (string) $attributes['disableButtonText'] ), 0, 100 ) )
 	: '✨ Disable Sparkles';
 
+$field_particle_style = glitter_bomb_sanitize_enum(
+	isset( $attributes['fieldParticleStyle'] ) ? $attributes['fieldParticleStyle'] : 'glitter',
+	array( 'glitter', 'pride-confetti' ),
+	'glitter'
+);
+
 // Validate boolean values (type safety)
 $enabled_by_default = isset( $attributes['enabledByDefault'] ) && $attributes['enabledByDefault'] === true;
 $field_click_explosion = isset( $attributes['fieldClickExplosion'] ) && $attributes['fieldClickExplosion'] === true;
@@ -303,6 +309,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 	'data-field-mouse-attraction' => esc_attr( $field_mouse_attraction ),
 	'data-field-spread-strength' => esc_attr( $field_spread_strength ),
 	'data-field-click-explosion' => esc_attr( $field_click_explosion ? 'true' : 'false' ),
+	'data-field-particle-style' => esc_attr( $field_particle_style ),
 	'data-disable-on-mobile' => esc_attr( $disable_on_mobile ? 'true' : 'false' ),
 ) );
 ?>

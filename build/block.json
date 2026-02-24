@@ -130,6 +130,10 @@
       "type": "boolean",
       "default": true
     },
+    "fieldParticleStyle": {
+      "type": "string",
+      "default": "glitter"
+    },
     "disableOnMobile": {
       "type": "boolean",
       "default": false

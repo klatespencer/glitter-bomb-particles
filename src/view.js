@@ -347,6 +347,7 @@
 				fieldMouseAttraction: parseFloat(blockElement.dataset.fieldMouseAttraction) || 0.5,
 				fieldSpreadStrength: parseFloat(blockElement.dataset.fieldSpreadStrength) || 0.3,
 				fieldClickExplosion: blockElement.dataset.fieldClickExplosion === 'true',
+			fieldParticleStyle: blockElement.dataset.fieldParticleStyle || 'glitter',
 				disableOnMobile: blockElement.dataset.disableOnMobile === 'true',
 			};
 
@@ -357,6 +358,7 @@
 				'neutral-spectrum': ['#8B8B8B', '#A9A9A9', '#C0C0C0', '#D3D3D3', '#E0E0E0'],
 				'warm-sunset': ['#FF6B6B', '#FFA07A', '#FFD700', '#FF8C00', '#FF4500'],
 				'cool-ocean': ['#00CED1', '#20B2AA', '#48D1CC', '#40E0D0', '#00FFFF'],
+			'pride-confetti': ['#FF0024', '#FF8C00', '#FFED00', '#008026', '#004DFF', '#750787'],
 				'custom': [this.config.customColor],
 			};
 
@@ -838,6 +840,14 @@
 			particle.driftAngle = Math.random() * Math.PI * 2;
 			particle.driftSpeed = 0.2 + Math.random() * 0.3;
 			particle.driftPhase = Math.random() * Math.PI * 2;
+
+			// Pride confetti: assign fixed color and faster tumble speed
+			if (this.config.fieldParticleStyle === 'pride-confetti') {
+				const prideColors = this.colorPalettes['pride-confetti'];
+				particle.color = prideColors[Math.floor(Math.random() * prideColors.length)];
+				const tumbleSpeed = 0.03 + Math.random() * 0.06;
+				particle.rotationSpeed = Math.random() < 0.5 ? tumbleSpeed : -tumbleSpeed;
+			}
 		}
 
 		// Create powerful ripple explosion effect on click
@@ -898,11 +908,22 @@
 				particle.driftAngle = 0;
 				particle.driftSpeed = 0;
 				particle.driftPhase = 0;
+
+				// Pride confetti: assign fixed color to explosion particles
+				if (this.config.fieldParticleStyle === 'pride-confetti') {
+					const prideColors = this.colorPalettes['pride-confetti'];
+					particle.color = prideColors[Math.floor(Math.random() * prideColors.length)];
+				}
 			}
 		}
 
 		getParticleColor(particle) {
-			const palette = this.config.experienceMode === 'particle-field' 
+			// Pride confetti: color is fixed at creation and stored directly on the particle
+			if (this.config.fieldParticleStyle === 'pride-confetti' && particle && particle.color) {
+				return this.hexToRgba(particle.color, particle.opacity);
+			}
+
+			const palette = this.config.experienceMode === 'particle-field'
 				? this.config.fieldColorPalette 
 				: this.config.colorPalette;
 			
@@ -1045,8 +1066,8 @@
 			for (let i = activeParticles.length - 1; i >= 0; i--) {
 				const particle = activeParticles[i];
 				
-				// Update color cycling for non-custom palettes
-				if (this.config.fieldColorPalette !== 'custom') {
+				// Update color cycling for non-custom palettes (skip for pride-confetti which uses fixed colors)
+				if (this.config.fieldColorPalette !== 'custom' && this.config.fieldParticleStyle !== 'pride-confetti') {
 					particle.colorIndex = (particle.colorIndex + particle.colorCycleSpeed) % 1;
 				}
 				
@@ -1169,46 +1190,66 @@
 		drawFieldParticles() {
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
 
+			const isPrideConfetti = this.config.fieldParticleStyle === 'pride-confetti';
 			const activeParticles = this.particlePool.getActive();
 			activeParticles.forEach((particle) => {
-				this.ctx.save();
-				this.ctx.translate(particle.x, particle.y);
-				this.ctx.rotate(particle.rotation);
+				if (isPrideConfetti) {
+					this.drawPrideConfetti(particle);
+				} else {
+					this.ctx.save();
+					this.ctx.translate(particle.x, particle.y);
+					this.ctx.rotate(particle.rotation);
 
-				// Get color with current particle state for cycling
-				const color = this.getParticleColor(particle);
-				
-				// Draw 5-element glitter sparkle
-				const elements = 5;
-				for (let i = 0; i < elements; i++) {
+					// Get color with current particle state for cycling
+					const color = this.getParticleColor(particle);
+					
+					// Draw 5-element glitter sparkle
+					const elements = 5;
+					for (let i = 0; i < elements; i++) {
+						this.ctx.beginPath();
+						const angle = (Math.PI * 2 * i) / elements;
+						const length = particle.size * 1.5;
+						
+						// Create diamond shape for each element
+						this.ctx.moveTo(0, 0);
+						this.ctx.lineTo(
+							Math.cos(angle) * length,
+							Math.sin(angle) * length
+						);
+						this.ctx.lineTo(
+							Math.cos(angle + 0.1) * (length * 0.5),
+							Math.sin(angle + 0.1) * (length * 0.5)
+						);
+						this.ctx.closePath();
+						
+						this.ctx.fillStyle = color;
+						this.ctx.fill();
+					}
+					
+					// Draw center glow
 					this.ctx.beginPath();
-					const angle = (Math.PI * 2 * i) / elements;
-					const length = particle.size * 1.5;
-					
-					// Create diamond shape for each element
-					this.ctx.moveTo(0, 0);
-					this.ctx.lineTo(
-						Math.cos(angle) * length,
-						Math.sin(angle) * length
-					);
-					this.ctx.lineTo(
-						Math.cos(angle + 0.1) * (length * 0.5),
-						Math.sin(angle + 0.1) * (length * 0.5)
-					);
-					this.ctx.closePath();
-					
+					this.ctx.arc(0, 0, particle.size * 0.5, 0, Math.PI * 2);
 					this.ctx.fillStyle = color;
 					this.ctx.fill();
+					
+					this.ctx.restore();
 				}
-				
-				// Draw center glow
-				this.ctx.beginPath();
-				this.ctx.arc(0, 0, particle.size * 0.5, 0, Math.PI * 2);
-				this.ctx.fillStyle = color;
-				this.ctx.fill();
-				
-				this.ctx.restore();
 			});
+		}
+
+		// Draw pride confetti particle — flat tumbling rectangle in a fixed pride color
+		drawPrideConfetti(particle) {
+			const halfH = particle.size * 0.5;
+			const halfW = particle.size * 1.0; // 2:1 width-to-height rectangle
+
+			this.ctx.save();
+			this.ctx.translate(particle.x, particle.y);
+			this.ctx.rotate(particle.rotation);
+			this.ctx.globalAlpha = particle.opacity;
+			this.ctx.fillStyle = particle.color;
+			this.ctx.fillRect(-halfW, -halfH, halfW * 2, halfH * 2);
+			this.ctx.restore();
+			this.ctx.globalAlpha = 1;
 		}
 
 		animate() {
