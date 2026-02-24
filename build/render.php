@@ -265,7 +265,7 @@ $disable_button_text = isset( $attributes['disableButtonText'] )
 
 $field_particle_style = glitter_bomb_sanitize_enum(
 	isset( $attributes['fieldParticleStyle'] ) ? $attributes['fieldParticleStyle'] : 'glitter',
-	array( 'glitter', 'pride-confetti', 'love-bomb' ),
+	array( 'glitter', 'pride-confetti', 'love-bomb', 'snow' ),
 	'glitter'
 );
 

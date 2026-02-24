@@ -362,6 +362,7 @@
 				'cool-ocean': ['#00CED1', '#20B2AA', '#48D1CC', '#40E0D0', '#00FFFF'],
 			'pride-confetti': ['#FF0024', '#FF8C00', '#FFED00', '#008026', '#004DFF', '#750787'],
 			'love-bomb': ['#FF6B6B', '#FF85A1', '#FFB3BA', '#E8365D', '#FF4F6E', '#FFAEC9'],
+			'snow': ['#FFFFFF', '#F0F8FF', '#E8F4F8'],
 				'custom': [this.config.customColor],
 			};
 
@@ -851,75 +852,111 @@
 				const tumbleSpeed = 0.03 + Math.random() * 0.06;
 				particle.rotationSpeed = Math.random() < 0.5 ? tumbleSpeed : -tumbleSpeed;
 			}
+
+			// Snow: override size distribution for realistic flake variation; add fall physics
+			if (this.config.fieldParticleStyle === 'snow') {
+				const maxSize = isMobile ? this.config.fieldParticleSizeMobile : this.config.fieldParticleSize;
+				particle.baseSize = 1.5 + Math.pow(Math.random(), 1.8) * (maxSize - 1.5);
+				particle.size = particle.baseSize;
+				particle.fallSpeed = 0.4 + (particle.baseSize / maxSize) * 1.8;
+				particle.vy = particle.fallSpeed * (0.2 + Math.random() * 0.5);
+				particle.vx = 0;
+				particle.driftPhase = Math.random() * Math.PI * 2;
+				particle.driftSpeed = 0.008 + Math.random() * 0.015;
+				particle.driftAngle = 0.3 + Math.random() * 0.5;
+				particle.baseOpacity = 0.35 + Math.random() * 0.65;
+				particle.opacity = particle.baseOpacity;
+			}
 		}
 
 		// Create powerful ripple explosion effect on click
 		createExplosion(x, y) {
-			// Much larger explosion radius to clear the area
 			const explosionRadius = 250;
 			const explosionForce = 8;
-			
-			// Push away all particles within radius
+			const isSnow = this.config.fieldParticleStyle === 'snow';
+			const baseSize = isMobile ? this.config.fieldParticleSizeMobile : this.config.fieldParticleSize;
+			const self = this;
+
+			// Push away existing particles (snow gets upward bias)
 			const activeParticles = this.particlePool.getActive();
 			activeParticles.forEach(function(particle) {
 				if (particle.isExplosion) return;
-				
 				const dx = particle.x - x;
 				const dy = particle.y - y;
 				const distance = Math.sqrt(dx * dx + dy * dy);
-				
-				// Apply force based on distance (closer = stronger push)
 				if (distance < explosionRadius && distance > 0) {
 					const force = (1 - distance / explosionRadius) * explosionForce;
 					const angle = Math.atan2(dy, dx);
-					
-					// Add velocity away from explosion center
-					particle.vx += Math.cos(angle) * force;
-					particle.vy += Math.sin(angle) * force;
+					particle.vx += Math.cos(angle) * force * (isSnow ? 0.4 : 1);
+					particle.vy += Math.sin(angle) * force * (isSnow ? 0.4 : 1);
+					if (isSnow) { particle.vy -= force * 0.6; }
 				}
 			});
-			
-			// Create sparkle burst at click point
-			const sparkleCount = 40;
-			const baseSize = isMobile ? this.config.fieldParticleSizeMobile : this.config.fieldParticleSize;
-			
-			for (let i = 0; i < sparkleCount; i++) {
-				const angle = (Math.PI * 2 * i) / sparkleCount;
-				const speed = 3 + Math.random() * 5;
-				
-				// Acquire particle from pool
-				const particle = this.particlePool.acquire();
-				
-				// Initialize explosion particle
-				particle.x = x;
-				particle.y = y;
-				particle.homeX = x;
-				particle.homeY = y;
-				particle.vx = Math.cos(angle) * speed;
-				particle.vy = Math.sin(angle) * speed;
-				particle.baseSize = baseSize * (1 + Math.random() * 0.8);
-				particle.size = particle.baseSize;
-				particle.opacity = 1;
-				particle.shimmerPhase = Math.random() * Math.PI * 2;
-				particle.shimmerSpeed = 0.05 + Math.random() * 0.05;
-				particle.rotation = Math.random() * Math.PI * 2;
-				particle.rotationSpeed = (Math.random() - 0.5) * 0.1;
-				particle.colorIndex = Math.random();
-				particle.colorCycleSpeed = 0.002;
-				particle.isExplosion = true;
-				particle.explosionLife = 1;
-				particle.driftAngle = 0;
-				particle.driftSpeed = 0;
-				particle.driftPhase = 0;
 
-				// Pride confetti: assign fixed color to explosion particles
-				if (this.config.fieldParticleStyle === 'pride-confetti') {
-					const prideColors = this.colorPalettes['pride-confetti'];
-					particle.color = prideColors[Math.floor(Math.random() * prideColors.length)];
+			if (isSnow) {
+				// Snow burst: flakes kicked upward in an arc, falling back under gravity
+				const burstCount = 35;
+				for (let i = 0; i < burstCount; i++) {
+					const burstAngle = -(Math.random() * Math.PI); // upward hemisphere
+					const speed = 3 + Math.random() * 7;
+					const sz = Math.max(1.5, 1.5 + Math.pow(Math.random(), 1.8) * (baseSize - 1.5));
+					const particle = this.particlePool.acquire();
+					particle.x = x + (Math.random() - 0.5) * 30;
+					particle.y = y;
+					particle.homeX = x;
+					particle.homeY = y;
+					particle.vx = Math.cos(burstAngle) * speed;
+					particle.vy = Math.sin(burstAngle) * speed;
+					particle.baseSize = sz;
+					particle.size = sz;
+					particle.fallSpeed = 0.4 + (sz / Math.max(baseSize, 1)) * 1.8;
+					particle.baseOpacity = 0.8 + Math.random() * 0.2;
+					particle.opacity = particle.baseOpacity;
+					particle.shimmerPhase = Math.random() * Math.PI * 2;
+					particle.driftPhase = Math.random() * Math.PI * 2;
+					particle.driftSpeed = 0.008 + Math.random() * 0.015;
+					particle.driftAngle = 0.5;
+					particle.isExplosion = true;
+					particle.explosionLife = 1;
+					particle.colorIndex = 0;
+					particle.colorCycleSpeed = 0;
+					particle.rotation = 0;
+					particle.rotationSpeed = 0;
+				}
+			} else {
+				// Regular sparkle burst
+				const sparkleCount = 40;
+				for (let i = 0; i < sparkleCount; i++) {
+					const angle = (Math.PI * 2 * i) / sparkleCount;
+					const speed = 3 + Math.random() * 5;
+					const particle = this.particlePool.acquire();
+					particle.x = x;
+					particle.y = y;
+					particle.homeX = x;
+					particle.homeY = y;
+					particle.vx = Math.cos(angle) * speed;
+					particle.vy = Math.sin(angle) * speed;
+					particle.baseSize = baseSize * (1 + Math.random() * 0.8);
+					particle.size = particle.baseSize;
+					particle.opacity = 1;
+					particle.shimmerPhase = Math.random() * Math.PI * 2;
+					particle.shimmerSpeed = 0.05 + Math.random() * 0.05;
+					particle.rotation = Math.random() * Math.PI * 2;
+					particle.rotationSpeed = (Math.random() - 0.5) * 0.1;
+					particle.colorIndex = Math.random();
+					particle.colorCycleSpeed = 0.002;
+					particle.isExplosion = true;
+					particle.explosionLife = 1;
+					particle.driftAngle = 0;
+					particle.driftSpeed = 0;
+					particle.driftPhase = 0;
+					if (self.config.fieldParticleStyle === 'pride-confetti') {
+						const prideColors = self.colorPalettes['pride-confetti'];
+						particle.color = prideColors[Math.floor(Math.random() * prideColors.length)];
+					}
 				}
 			}
 		}
-
 		getParticleColor(particle) {
 			// Pride confetti: color is fixed at creation and stored directly on the particle
 			if (this.config.fieldParticleStyle === 'pride-confetti' && particle && particle.color) {
@@ -1178,6 +1215,71 @@
 			}
 		}
 
+		// Update snow field particles with gravity and drift physics
+		updateSnowParticles() {
+			const attraction = this.config.fieldMouseAttraction;
+			const disturbanceRadius = 120;
+			const activeParticles = this.particlePool.getActive();
+			for (let i = activeParticles.length - 1; i >= 0; i--) {
+				const particle = activeParticles[i];
+
+				if (particle.isExplosion) {
+					// Snow explosion: upward burst arcing back down under gravity
+					particle.vy += 0.25;
+					particle.vx *= 0.98;
+					particle.x += particle.vx;
+					particle.y += particle.vy;
+					particle.explosionLife -= 0.016;
+					particle.opacity = Math.max(0, particle.explosionLife * (particle.baseOpacity || 0.9));
+					if (particle.explosionLife <= 0) {
+						this.particlePool.release(particle);
+					}
+					continue;
+				}
+
+				// Gravity: accelerate toward terminal velocity
+				if (particle.vy < particle.fallSpeed) {
+					particle.vy += 0.04;
+				}
+
+				// Sinusoidal horizontal drift — each flake has a unique phase and frequency
+				particle.driftPhase += particle.driftSpeed;
+				particle.vx = Math.sin(particle.driftPhase) * particle.driftAngle;
+
+				// Mouse disturbance: warm air rising from cursor pushes snow outward and upward
+				if (attraction > 0 && this.mouseInViewport) {
+					const dx = particle.x - this.mouseX;
+					const dy = particle.y - this.mouseY;
+					const dist = Math.sqrt(dx * dx + dy * dy);
+					if (dist < disturbanceRadius && dist > 0) {
+						const force = (1 - dist / disturbanceRadius) * attraction * 1.5;
+						particle.vx += (dx / dist) * force * 0.5;
+						particle.vy -= force * 0.4;
+					}
+				}
+
+				// Update position
+				particle.x += particle.vx;
+				particle.y += particle.vy;
+
+				// Wrap horizontally
+				if (particle.x < -particle.size) particle.x = this.logicalWidth + particle.size;
+				if (particle.x > this.logicalWidth + particle.size) particle.x = -particle.size;
+
+				// Respawn at top when flake exits the bottom
+				if (particle.y > this.logicalHeight + particle.size) {
+					particle.x = Math.random() * this.logicalWidth;
+					particle.y = -particle.size - Math.random() * 30;
+					particle.vy = particle.fallSpeed * (0.2 + Math.random() * 0.3);
+				}
+
+				// Subtle opacity shimmer for depth realism
+				particle.shimmerPhase += 0.018;
+				const shimmer = (Math.sin(particle.shimmerPhase) + 1) / 2;
+				particle.opacity = particle.baseOpacity * (0.75 + shimmer * 0.25);
+			}
+		}
+
 		// Draw sprinkle trail particles
 		drawSprinkleParticles() {
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
@@ -1216,6 +1318,8 @@
 					this.drawPrideConfetti(particle);
 				} else if (style === 'love-bomb') {
 					this.drawLoveBombHeart(particle);
+				} else if (style === 'snow') {
+					this.drawSnowParticle(particle);
 				} else {
 					this.ctx.save();
 					this.ctx.translate(particle.x, particle.y);
@@ -1296,6 +1400,24 @@
 			this.ctx.globalAlpha = 1;
 		}
 
+		// Draw individual snow particle — soft radial gradient for photorealistic look
+		drawSnowParticle(particle) {
+			const x = particle.x;
+			const y = particle.y;
+			const s = particle.size;
+			const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, s);
+			gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+			gradient.addColorStop(0.45, 'rgba(240, 248, 255, 0.85)');
+			gradient.addColorStop(1, 'rgba(200, 228, 255, 0)');
+			this.ctx.save();
+			this.ctx.globalAlpha = particle.opacity;
+			this.ctx.beginPath();
+			this.ctx.arc(x, y, s, 0, Math.PI * 2);
+			this.ctx.fillStyle = gradient;
+			this.ctx.fill();
+			this.ctx.restore();
+		}
+
 		animate() {
 			// Only continue if tab is visible and effects are active
 			if (!this.isTabVisible || !this.isActive) {
@@ -1316,6 +1438,9 @@
 				if (this.config.experienceMode === 'sprinkle-trail') {
 					this.updateSprinkleParticles(currentTime);
 					this.drawSprinkleParticles();
+				} else if (this.config.fieldParticleStyle === 'snow') {
+					this.updateSnowParticles();
+					this.drawFieldParticles();
 				} else {
 					this.updateFieldParticles();
 					this.drawFieldParticles();
