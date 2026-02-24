@@ -63,6 +63,8 @@ export default function Edit( { attributes, setAttributes } ) {
 		fieldSpreadStrength,
 		fieldClickExplosion,
 		fieldParticleStyle,
+		sprinkleStyle,
+		sprinkleEmoji,
 		disableOnMobile,
 	} = attributes;
 
@@ -71,6 +73,10 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	// Local state for collapsed/expanded view
 	const [ isExpanded, setIsExpanded ] = useState( false );
+
+	// Local state for custom emoji picker
+	const PRESET_EMOJIS = ['✨', '⭐', '🌟', '❤️', '💜', '🦋', '🌸', '💎', '🍀'];
+	const [ showCustomEmoji, setShowCustomEmoji ] = useState( ! PRESET_EMOJIS.includes( sprinkleEmoji ) );
 
 	return (
 		<>
@@ -206,6 +212,17 @@ export default function Edit( { attributes, setAttributes } ) {
 				{ isSprinkleTrail && (
 					<PanelBody title={ __( 'Sprinkle Trail Settings', 'glitter-bomb' ) } initialOpen={ true }>
 						<SelectControl
+							label={ __( 'Trail Style', 'glitter-bomb' ) }
+							value={ sprinkleStyle }
+							options={ [
+								{ label: __( 'Particles', 'glitter-bomb' ), value: 'particles' },
+								{ label: __( 'Emoji', 'glitter-bomb' ), value: 'emoji' },
+							] }
+							onChange={ ( value ) => setAttributes( { sprinkleStyle: value } ) }
+							help={ __( 'Particles: colored circles. Emoji: drop any emoji as you move.', 'glitter-bomb' ) }
+						/>
+
+						<SelectControl
 							label={ __( 'Display Behavior', 'glitter-bomb' ) }
 							value={ displayBehavior }
 							options={ [
@@ -216,32 +233,73 @@ export default function Edit( { attributes, setAttributes } ) {
 							help={ __( 'Scattered: particles drift outward as they fade. Compact: particles stay close to cursor path with faster fade.', 'glitter-bomb' ) }
 						/>
 
-						<SelectControl
-							label={ __( 'Color Palette', 'glitter-bomb' ) }
-							value={ colorPalette }
-							options={ [
-								{ label: __( 'Rainbow (cycling)', 'glitter-bomb' ), value: 'rainbow-cycling' },
-								{ label: __( 'Metallic (cycling)', 'glitter-bomb' ), value: 'metallic' },
-								{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
-								{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
-								{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
-								{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
-							] }
-							onChange={ ( value ) => setAttributes( { colorPalette: value } ) }
-							help={ __( 'Choose a color palette for the particles. All palettes except Custom cycle through colors automatically.', 'glitter-bomb' ) }
-						/>
+						{ sprinkleStyle !== 'emoji' && (
+							<>
+								<SelectControl
+									label={ __( 'Color Palette', 'glitter-bomb' ) }
+									value={ colorPalette }
+									options={ [
+										{ label: __( 'Rainbow (cycling)', 'glitter-bomb' ), value: 'rainbow-cycling' },
+										{ label: __( 'Metallic (cycling)', 'glitter-bomb' ), value: 'metallic' },
+										{ label: __( 'Neutral Spectrum (cycling)', 'glitter-bomb' ), value: 'neutral-spectrum' },
+										{ label: __( 'Warm Sunset (cycling)', 'glitter-bomb' ), value: 'warm-sunset' },
+										{ label: __( 'Cool Ocean (cycling)', 'glitter-bomb' ), value: 'cool-ocean' },
+										{ label: __( 'Custom Color', 'glitter-bomb' ), value: 'custom' },
+									] }
+									onChange={ ( value ) => setAttributes( { colorPalette: value } ) }
+									help={ __( 'Choose a color palette for the particles. All palettes except Custom cycle through colors automatically.', 'glitter-bomb' ) }
+								/>
 
-						{ colorPalette === 'custom' && (
-							<PanelColorSettings
-								title={ __( 'Custom Particle Color', 'glitter-bomb' ) }
-								colorSettings={ [
-									{
-										value: customColor,
-										onChange: ( value ) => setAttributes( { customColor: value } ),
-										label: __( 'Particle Color', 'glitter-bomb' ),
-									},
-								] }
-							/>
+								{ colorPalette === 'custom' && (
+									<PanelColorSettings
+										title={ __( 'Custom Particle Color', 'glitter-bomb' ) }
+										colorSettings={ [
+											{
+												value: customColor,
+												onChange: ( value ) => setAttributes( { customColor: value } ),
+												label: __( 'Particle Color', 'glitter-bomb' ),
+											},
+										] }
+									/>
+								) }
+							</>
+						) }
+
+						{ sprinkleStyle === 'emoji' && (
+							<>
+								<SelectControl
+									label={ __( 'Emoji', 'glitter-bomb' ) }
+									value={ showCustomEmoji ? 'custom' : sprinkleEmoji }
+									options={ [
+										{ label: '✨  Sparkles', value: '✨' },
+										{ label: '⭐  Star', value: '⭐' },
+										{ label: '🌟  Glowing Star', value: '🌟' },
+										{ label: '❤️  Heart', value: '❤️' },
+										{ label: '💜  Purple Heart', value: '💜' },
+										{ label: '🦋  Butterfly', value: '🦋' },
+										{ label: '🌸  Cherry Blossom', value: '🌸' },
+										{ label: '💎  Diamond', value: '💎' },
+										{ label: '🍀  Four Leaf Clover', value: '🍀' },
+										{ label: __( 'Custom…', 'glitter-bomb' ), value: 'custom' },
+									] }
+									onChange={ ( value ) => {
+										if ( value === 'custom' ) {
+											setShowCustomEmoji( true );
+										} else {
+											setShowCustomEmoji( false );
+											setAttributes( { sprinkleEmoji: value } );
+										}
+									} }
+								/>
+								{ showCustomEmoji && (
+									<TextControl
+										label={ __( 'Custom Emoji', 'glitter-bomb' ) }
+										value={ sprinkleEmoji }
+										onChange={ ( value ) => setAttributes( { sprinkleEmoji: value } ) }
+										help={ __( "Type or paste any emoji. Appears differently across platforms — that's part of the charm!", 'glitter-bomb' ) }
+									/>
+								) }
+							</>
 						) }
 
 						<RangeControl

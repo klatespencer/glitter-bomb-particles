@@ -269,6 +269,18 @@ $field_particle_style = glitter_bomb_sanitize_enum(
 	'glitter'
 );
 
+$sprinkle_style = glitter_bomb_sanitize_enum(
+	isset( $attributes['sprinkleStyle'] ) ? $attributes['sprinkleStyle'] : 'particles',
+	array( 'particles', 'emoji' ),
+	'particles'
+);
+
+$sprinkle_emoji_raw = isset( $attributes['sprinkleEmoji'] ) ? $attributes['sprinkleEmoji'] : '✨';
+$sprinkle_emoji = mb_substr( sanitize_text_field( $sprinkle_emoji_raw ), 0, 8 );
+if ( empty( $sprinkle_emoji ) ) {
+	$sprinkle_emoji = '✨';
+}
+
 // Validate boolean values (type safety)
 $enabled_by_default = isset( $attributes['enabledByDefault'] ) && $attributes['enabledByDefault'] === true;
 $field_click_explosion = isset( $attributes['fieldClickExplosion'] ) && $attributes['fieldClickExplosion'] === true;
@@ -302,6 +314,8 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 	'data-disable-button-gradient-start' => esc_attr( $disable_button_gradient_start ),
 	'data-disable-button-gradient-end' => esc_attr( $disable_button_gradient_end ),
 	'data-display-behavior' => esc_attr( $display_behavior ),
+	'data-sprinkle-style' => esc_attr( $sprinkle_style ),
+	'data-sprinkle-emoji' => esc_attr( $sprinkle_emoji ),
 	'data-field-color-palette' => esc_attr( $field_color_palette ),
 	'data-field-particle-count' => esc_attr( $field_particle_count ),
 	'data-field-particle-size' => esc_attr( $field_particle_size ),

@@ -348,6 +348,8 @@
 				fieldSpreadStrength: parseFloat(blockElement.dataset.fieldSpreadStrength) || 0.3,
 				fieldClickExplosion: blockElement.dataset.fieldClickExplosion === 'true',
 			fieldParticleStyle: blockElement.dataset.fieldParticleStyle || 'glitter',
+			sprinkleStyle: blockElement.dataset.sprinkleStyle || 'particles',
+			sprinkleEmoji: blockElement.dataset.sprinkleEmoji || '✨',
 				disableOnMobile: blockElement.dataset.disableOnMobile === 'true',
 			};
 
@@ -1177,12 +1179,26 @@
 		drawSprinkleParticles() {
 			this.ctx.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
 
+			const isEmoji = this.config.sprinkleStyle === 'emoji';
+			const emoji = this.config.sprinkleEmoji || '✨';
+
 			const activeParticles = this.particlePool.getActive();
 			activeParticles.forEach((particle) => {
-				this.ctx.beginPath();
-				this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-				this.ctx.fillStyle = particle.color.replace(/[\d.]+\)$/g, particle.opacity + ')');
-				this.ctx.fill();
+				if (isEmoji) {
+					this.ctx.save();
+					this.ctx.globalAlpha = particle.opacity;
+					this.ctx.font = `${Math.round(particle.size * 2)}px serif`;
+					this.ctx.textAlign = 'center';
+					this.ctx.textBaseline = 'middle';
+					this.ctx.fillText(emoji, particle.x, particle.y);
+					this.ctx.restore();
+					this.ctx.globalAlpha = 1;
+				} else {
+					this.ctx.beginPath();
+					this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+					this.ctx.fillStyle = particle.color.replace(/[\d.]+\)$/g, particle.opacity + ')');
+					this.ctx.fill();
+				}
 			});
 		}
 
