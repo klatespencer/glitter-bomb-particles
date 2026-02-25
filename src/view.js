@@ -352,6 +352,7 @@
 				fieldClickExplosion: blockElement.dataset.fieldClickExplosion === 'true',
 			fieldParticleStyle: blockElement.dataset.fieldParticleStyle || 'glitter',
 			sprinkleStyle: blockElement.dataset.sprinkleStyle || 'particles',
+				sprinkleClickExplosion: blockElement.dataset.sprinkleClickExplosion !== 'false',
 			sprinkleEmoji: blockElement.dataset.sprinkleEmoji || '✨',
 				disableOnMobile: blockElement.dataset.disableOnMobile === 'true',
 			};
@@ -366,7 +367,7 @@
 			'pride-confetti': ['#FF0024', '#FF8C00', '#FFED00', '#008026', '#004DFF', '#750787'],
 			'love-bomb': ['#FF6B6B', '#FF85A1', '#FFB3BA', '#E8365D', '#FF4F6E', '#FFAEC9'],
 			'snow': ['#FFFFFF', '#F0F8FF', '#E8F4F8'],
-			'fourth-of-july': ['#FF2200', '#FFFFFF', '#0033CC', '#FFD700', '#FF6633', '#66AAFF'],
+			'fourth-of-july': ['#FF0000', '#CC1111', '#FFFFFF', '#FFFAF0', '#0033CC', '#1155EE', '#0022AA'],
 			'autumn': ['#C44B0C', '#D4522A', '#8B2500', '#DAA520', '#9B1B0A', '#B8500A', '#CC7722'],
 				'custom': [this.config.customColor],
 			};
@@ -693,20 +694,24 @@
 
 			// Click handler for particle field explosions
 			this.clickHandler = (e) => {
-				if (this.isActive &&
-					this.config.experienceMode === 'particle-field' &&
-					this.config.fieldClickExplosion) {
-					this.createExplosion(e.clientX, e.clientY);
+				if (this.isActive) {
+					if (this.config.experienceMode === 'particle-field' && this.config.fieldClickExplosion) {
+						this.createExplosion(e.clientX, e.clientY);
+					} else if (this.config.experienceMode === 'sprinkle-trail' && this.config.sprinkleClickExplosion) {
+						this.createSprinkleExplosion(e.clientX, e.clientY);
+					}
 				}
 			};
 
 			// Touch tap handler for explosions
 			this.touchTapHandler = (e) => {
-				if (this.isActive &&
-					this.config.experienceMode === 'particle-field' &&
-					this.config.fieldClickExplosion) {
+				if (this.isActive) {
 					const touch = e.changedTouches[0];
-					this.createExplosion(touch.clientX, touch.clientY);
+					if (this.config.experienceMode === 'particle-field' && this.config.fieldClickExplosion) {
+						this.createExplosion(touch.clientX, touch.clientY);
+					} else if (this.config.experienceMode === 'sprinkle-trail' && this.config.sprinkleClickExplosion) {
+						this.createSprinkleExplosion(touch.clientX, touch.clientY);
+					}
 				}
 			};
 
@@ -895,6 +900,41 @@
 				particle.opacity = particle.baseOpacity;
 				const autumnPalette = this.colorPalettes['autumn'];
 				particle.leafColor = autumnPalette[Math.floor(Math.random() * autumnPalette.length)];
+			}
+		}
+
+		// Create sprinkle burst on click/tap
+		createSprinkleExplosion(x, y) {
+			const isEmoji = this.config.sprinkleStyle === 'emoji';
+			const count = isEmoji ? 10 : 20;
+			const baseSize = isMobile ? this.config.particleSizeMobile : this.config.particleSize;
+			for (let i = 0; i < count; i++) {
+				const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+				const speed = 2 + Math.random() * 4;
+				const particle = this.particlePool.acquire();
+				particle.x = x;
+				particle.y = y;
+				particle.homeX = x;
+				particle.homeY = y;
+				particle.vx = Math.cos(angle) * speed;
+				particle.vy = Math.sin(angle) * speed;
+				particle.size = baseSize * (0.8 + Math.random() * 0.6);
+				particle.baseSize = particle.size;
+				particle.opacity = 1;
+				particle.isExplosion = true;
+				particle.explosionLife = 0.8 + Math.random() * 0.4;
+				particle.color = this.getParticleColor();
+				particle.colorIndex = Math.random();
+				particle.colorCycleSpeed = 0;
+				particle.rotation = 0;
+				particle.rotationSpeed = 0;
+				particle.driftAngle = 0;
+				particle.driftSpeed = 0;
+				particle.driftPhase = 0;
+				particle.birthTime = 0;
+				particle.maxLife = 0;
+				particle.shimmerPhase = 0;
+				particle.shimmerSpeed = 0;
 			}
 		}
 
@@ -1120,6 +1160,18 @@
 			for (let i = activeParticles.length - 1; i >= 0; i--) {
 				const particle = activeParticles[i];
 
+				// Explosion particles from click burst — handled separately
+				if (particle.isExplosion) {
+					particle.explosionLife -= 0.02;
+					particle.opacity = Math.max(0, particle.explosionLife);
+					particle.x += particle.vx;
+					particle.y += particle.vy;
+					particle.vx *= 0.94;
+					particle.vy *= 0.94;
+					if (particle.explosionLife <= 0) { this.particlePool.release(particle); }
+					continue;
+				}
+
 				// Calculate age and life ratio
 				const age = currentTime - particle.birthTime;
 				const lifeRatio = Math.max(0, 1 - (age / particle.maxLife));
@@ -1274,9 +1326,9 @@
 
 			// Auto-launch rockets on timer
 			this.rocketLaunchTimer++;
-			if (this.rocketLaunchTimer >= launchInterval && this.rockets.length < 8) {
+			if (this.rocketLaunchTimer >= launchInterval && this.rockets.length < 12) {
 				this.launchRocket(palette);
-				if (Math.random() < 0.25) { this.launchRocket(palette); } // occasional double
+				if (Math.random() < 0.35) { this.launchRocket(palette); } // occasional double
 				this.rocketLaunchTimer = 0;
 			}
 
@@ -1303,7 +1355,7 @@
 				particle.vx *= 0.99;
 				particle.x += particle.vx;
 				particle.y += particle.vy;
-				particle.explosionLife -= 0.014;
+				particle.explosionLife -= 0.01;
 				particle.opacity = Math.max(0, particle.explosionLife);
 				particle.size = particle.baseSize * Math.max(0, particle.explosionLife);
 				if (particle.explosionLife <= 0 || particle.y > this.logicalHeight + 50) {
@@ -1315,7 +1367,7 @@
 		// Launch a single rocket from a scattered position in the lower screen
 		launchRocket(palette) {
 			const color = palette[Math.floor(Math.random() * palette.length)];
-			const speed = 9 + Math.random() * 6;
+			const speed = 7 + Math.random() * 5;
 			this.rockets.push({
 				x: Math.random() * this.logicalWidth,
 				y: this.logicalHeight * (0.45 + Math.random() * 0.45),
@@ -1332,7 +1384,7 @@
 			const rgb = rocket.colorRgb;
 			for (let i = 0; i < sparkleCount; i++) {
 				const angle = (Math.PI * 2 * i / sparkleCount) + (Math.random() - 0.5) * 0.4;
-				const speed = 1.5 + Math.random() * 4.5;
+				const speed = 1 + Math.random() * 3;
 				const particle = this.particlePool.acquire();
 				particle.x = rocket.x;
 				particle.y = rocket.y;

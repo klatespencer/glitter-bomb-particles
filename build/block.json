@@ -110,6 +110,10 @@
       "type": "string",
       "default": "✨"
     },
+    "sprinkleClickExplosion": {
+      "type": "boolean",
+      "default": true
+    },
     "fieldColorPalette": {
       "type": "string",
       "default": "metallic"

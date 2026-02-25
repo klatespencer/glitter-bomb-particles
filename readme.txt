@@ -63,6 +63,8 @@ Yes. Particle trails follow your finger with smooth gesture tracking, tap trigge
 
 Yes. WCAG 2.2 AA compliant: keyboard navigation, screen reader announcements via ARIA live regions, visible focus indicators, and automatic respect for `prefers-reduced-motion` per [WCAG 2.1 Success Criterion 2.3.3](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html).
 
+Particle effects are also designed to comply with [WCAG 2.3.1 (Three Flashes or Below Threshold)](https://www.w3.org/TR/UNDERSTANDING-WCAG20/seizure-does-not-violate.html) — no style produces rapid, high-contrast strobing. If your audience includes people with photosensitive epilepsy, disabling effects by default and letting users opt in is worth considering.
+
 = What is the Seasonal Override? =
 
 It lets you schedule different particle styles for specific dates each year — useful for holidays, events, or seasonal themes. Add as many rules as you like; each has a start date, end date, and style. The first active rule wins, so order matters. Rules are mode-locked: Particle Field rules pick from field styles, Sprinkle Trail rules pick trail styles or switch to a specific emoji. Everything repeats automatically every year.

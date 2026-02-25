@@ -317,6 +317,7 @@ if ( empty( $sprinkle_emoji ) ) {
 // Validate boolean values (type safety)
 $enabled_by_default = isset( $attributes['enabledByDefault'] ) && $attributes['enabledByDefault'] === true;
 $field_click_explosion = isset( $attributes['fieldClickExplosion'] ) && $attributes['fieldClickExplosion'] === true;
+$sprinkle_click_explosion = ! isset( $attributes['sprinkleClickExplosion'] ) || $attributes['sprinkleClickExplosion'] !== false;
 $disable_on_mobile = isset( $attributes['disableOnMobile'] ) && $attributes['disableOnMobile'] === true;
 
 // Seasonal override: iterate rules array, apply first active match
@@ -407,6 +408,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 	'data-display-behavior' => esc_attr( $display_behavior ),
 	'data-sprinkle-style' => esc_attr( $sprinkle_style ),
 	'data-sprinkle-emoji' => esc_attr( $sprinkle_emoji ),
+	'data-sprinkle-click-explosion' => esc_attr( $sprinkle_click_explosion ? 'true' : 'false' ),
 	'data-field-color-palette' => esc_attr( $field_color_palette ),
 	'data-field-particle-count' => esc_attr( $field_particle_count ),
 	'data-field-particle-size' => esc_attr( $field_particle_size ),

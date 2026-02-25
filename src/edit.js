@@ -117,6 +117,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		fieldParticleStyle,
 		sprinkleStyle,
 		sprinkleEmoji,
+		sprinkleClickExplosion,
 		disableOnMobile,
 		seasonalEnabled,
 		seasonalRules,
@@ -276,6 +277,13 @@ export default function Edit( { attributes, setAttributes } ) {
 							help={ __( 'Particles: colored circles. Emoji: drop any emoji as you move.', 'glitter-bomb' ) }
 						/>
 
+						<ToggleControl
+							label={ __( 'Click / Tap Explosion', 'glitter-bomb' ) }
+							help={ __( 'Burst of particles (or emoji) on click and tap.', 'glitter-bomb' ) }
+							checked={ sprinkleClickExplosion }
+							onChange={ ( value ) => setAttributes( { sprinkleClickExplosion: value } ) }
+						/>
+
 						<SelectControl
 							label={ __( 'Display Behavior', 'glitter-bomb' ) }
 							value={ displayBehavior }
@@ -423,9 +431,10 @@ export default function Edit( { attributes, setAttributes } ) {
 							{ label: __( 'Autumn Leaves', 'glitter-bomb' ), value: 'autumn-leaves' },
 							] }
 							onChange={ ( value ) => {
-							setAttributes( { fieldParticleStyle: value } );
-							if ( value === 'fireworks' ) { setAttributes( { fieldColorPalette: 'fourth-of-july' } ); }
-							if ( value === 'autumn-leaves' ) { setAttributes( { fieldColorPalette: 'autumn' } ); }
+							const updates = { fieldParticleStyle: value };
+							if ( value === 'fireworks' ) { updates.fieldColorPalette = 'fourth-of-july'; }
+							if ( value === 'autumn-leaves' ) { updates.fieldColorPalette = 'autumn'; }
+							setAttributes( updates );
 						} }
 							help={ __( 'Choose the particle style for the field effect', 'glitter-bomb' ) }
 						/>

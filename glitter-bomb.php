@@ -57,3 +57,37 @@ function glitter_bomb_plugin_action_links( $links ) {
 	return $links;
 }
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'glitter_bomb_plugin_action_links' );
+
+/**
+ * Register block pattern category and patterns.
+ */
+function glitter_bomb_register_patterns() {
+	if ( ! function_exists( 'register_block_pattern' ) ) {
+		return;
+	}
+
+	register_block_pattern_category(
+		'glitter-bomb',
+		array(
+			'label'       => __( 'Glitter Bomb', 'glitter-bomb' ),
+			'description' => __( 'Full-page layouts with particle effects', 'glitter-bomb' ),
+		)
+	);
+
+	$pattern_files = array(
+		'winter-holiday',
+		'pride-event',
+		'valentines-day',
+		'fourth-of-july',
+		'new-years-eve',
+		'autumn-harvest',
+	);
+
+	foreach ( $pattern_files as $pattern ) {
+		$file = GLITTER_BOMB_PLUGIN_DIR . 'patterns/' . $pattern . '.php';
+		if ( file_exists( $file ) ) {
+			require $file;
+		}
+	}
+}
+add_action( 'init', 'glitter_bomb_register_patterns' );
